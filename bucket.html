@@ -41,12 +41,98 @@
         <div class="container">
             <div class="bucket-wrap">
                 <div class="bucketitem">
-                    <img src="/public/img/banana.jpg" alt="상품">
-                    초코송이
+                    <div class="item-ui">
+                        <img src="public/img/songe.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">초코송이</div>
+                            <div class="item-price">4$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="public/img/choco.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">ABC 초콜릿</div>
+                            <div class="item-price">6$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="public/img/banana.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">바나나우유</div>
+                            <div class="item-price">1.9$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="public/img/apple.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">사과</div>
+                            <div class="item-price">16$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="public/img/huney.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">허니버터칩</div>
+                            <div class="item-price">2$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="public/img/swing.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">스윙칩</div>
+                            <div class="item-price">1.7$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        const itemslots = document.getElementsByClassName('bucketitem')
+        const slots = []
+
+        class Slot {
+            constructor(index) {
+                this.index = index
+                this.itemslot = itemslots[index]
+                this.checkbox = itemslots[index].getElementsByClassName('selectBtn')[0]
+                this.checkbox.addEventListener('click', (env) => {
+                    if (this.checkbox.className.indexOf('checked') == -1) {
+                        this.checkbox.className += ' checked'
+                    } else {
+                        this.checkbox.className = 'selectBtn'
+                    }
+                })
+                this.itemslot.addEventListener('click', (env) => {
+                    if (this.checkbox.className.indexOf('checked') == -1) {
+                        this.checkbox.className += ' checked'
+                    } else {
+                        this.checkbox.className = 'selectBtn'
+                    }
+                })
+            }
+        }
+
+        for (var i = 0; i < itemslots.length; i++) {
+            slots.push(new Slot(i))
+        }
+    </script>
 </body>
 
 </html>

@@ -33,7 +33,7 @@ body {
 }
 
 .container {
-    margin-top: 130px;
+    margin-top: 80px;
     padding: 30px;
     display: flex;
     flex-direction: column;
@@ -86,7 +86,7 @@ body {
     transition: 0.1s;
 }
 
-.itemslot-wrap>a:hover {
+a:hover {
     color: #4dade6;
 }
 
