@@ -6,6 +6,7 @@
 }
 
 .bucket-wrap {
+    background-color: white;
     display: flex;
     flex-direction: column;
 }
@@ -67,7 +68,32 @@
     font-weight: 400;
 }
 
-.checked{
+.checked {
     border: none;
     background-color: #29b0ff;
+}
+
+.status-viewer {
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+}
+
+.status-viewer>*{
+    font-weight: 500;
+}
+
+.status-header {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.status-footer {
+    flex: 1;
+    display: flex;
+    justify-content: right;
+    align-items: center;
 }

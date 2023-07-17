@@ -40,6 +40,13 @@
         <!--Content-->
         <div class="container">
             <div class="bucket-wrap">
+                <div class="status-viewer">
+                    <div class="status-header">
+                        <div class="status-count">0개 선택</div>
+                    </div>
+                    <div class="status-footer">
+                    </div>
+                </div>
                 <div class="bucketitem">
                     <div class="item-ui">
                         <img src="public/img/songe.jpg" alt="상품">
@@ -104,27 +111,32 @@
         </div>
     </div>
     <script>
+        const countView=document.getElementsByClassName('status-count')
         const itemslots = document.getElementsByClassName('bucketitem')
         const slots = []
+
+        function onSelect(){
+            count=0
+            for(var i=0; i<slots.length; i++){
+                if(slots[i].checkbox.className.indexOf('checked')!==-1){
+                    count+=1
+                }
+            }
+            countView.innerText=`${count}개 선택`
+        }
 
         class Slot {
             constructor(index) {
                 this.index = index
                 this.itemslot = itemslots[index]
                 this.checkbox = itemslots[index].getElementsByClassName('selectBtn')[0]
-                this.checkbox.addEventListener('click', (env) => {
-                    if (this.checkbox.className.indexOf('checked') == -1) {
-                        this.checkbox.className += ' checked'
-                    } else {
-                        this.checkbox.className = 'selectBtn'
-                    }
-                })
                 this.itemslot.addEventListener('click', (env) => {
                     if (this.checkbox.className.indexOf('checked') == -1) {
                         this.checkbox.className += ' checked'
                     } else {
                         this.checkbox.className = 'selectBtn'
                     }
+                    onSelect()
                 })
             }
         }
