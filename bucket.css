@@ -28,7 +28,7 @@
 
 .bucketitem:hover {
     z-index: 1;
-    box-shadow: 0px 0px 4px 5px #f5f5f5;
+    box-shadow: 0px 0px 4px 5px #eeeeee;
 }
 
 .item-ui {
@@ -53,7 +53,8 @@
     justify-self: right;
     width: 35px;
     height: 35px;
-    border: 1px solid lightgray;
+    border: 2px solid lightgray;
+    background-color: lightgray;
     border-radius: 10px;
 }
 
