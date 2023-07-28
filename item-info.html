@@ -49,10 +49,17 @@
                             <div class="info-itemPrice">1,600원</div>
                         </div>
                         <div class="buy-container">
+                            <div class="cost-result">
+                                1개 × 1600원 = 1600원
+                            </div>
                         </div>
                         <div class="buy-footer">
                             <div class="inputCount-wrap">
                                 <input class="count" type="text" value="1" maxlength="4">
+                                <div class="countControll">
+                                    <div class="countUp">+</div>
+                                    <div class="countDown">-</div>
+                                </div>
                             </div>
                             <div class="button buynowBtn">바로구매</div>
                             <div class="button insertBucketBtn">담아두기</div>
@@ -63,6 +70,44 @@
         </div>
 
     </div>
+    <script>
+
+        const counter = document.getElementsByClassName('count')[0]
+        const countUp = document.getElementsByClassName('countUp')[0]
+        const countDown = document.getElementsByClassName('countDown')[0]
+        const costResult = document.getElementsByClassName('cost-result')[0];
+
+        const price = 1600
+        let _count = 1
+
+        function updateCount() {
+            counter.value = `${_count}`
+            costResult.innerText = `${_count}개 × ${price}원 = ${_count * price}원`
+        }
+
+        countUp.addEventListener('click', (e) => {
+            if (_count >= 9999) {
+                returns
+            }
+            _count += 1
+            updateCount()
+        })
+
+        countDown.addEventListener('click', (e) => {
+            if (_count <= 1) {
+                return
+            }
+            _count -= 1
+            updateCount()
+        })
+
+        counter.addEventListener("keyup", (e)=>{
+            _count=Number(counter.value)
+            updateCount()
+        })
+
+
+    </script>
 </body>
 
 </html>
