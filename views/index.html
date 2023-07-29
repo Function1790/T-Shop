@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/my">MY</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="sellitem-wrap">
+                {{itemlist}}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

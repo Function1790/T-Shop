@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/item-info.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="/img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/my">MY</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="wrapInfo">
+                <div class="info-header">
+                    <div class="info-imgWrap">
+                        <img div="item-image" src="/img/{{itemName}}.jpg" alt="물품 사진">
+                    </div>
+                    <div class="info-textWrap">
+                        <div class="buy-header">
+                            <div class="info-itemName">{{itemName}}</div>
+                            <div class="info-itemPrice">{{itemPrice}}</div>
+                        </div>
+                        <div class="buy-container">
+                            <div class="cost-result">
+                                1개 × {{itemPrice}}원 = {{itemPrice}}원
+                            </div>
+                        </div>
+                        <div class="buy-footer">
+                            <div class="inputCount-wrap">
+                                <input class="count" type="text" value="1" maxlength="4">
+                                <div class="countControll">
+                                    <div class="countUp">+</div>
+                                    <div class="countDown">-</div>
+                                </div>
+                            </div>
+                            <div class="button buynowBtn">바로구매</div>
+                            <div class="button insertBucketBtn">담아두기</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+
+        const counter = document.getElementsByClassName('count')[0]
+        const countUp = document.getElementsByClassName('countUp')[0]
+        const countDown = document.getElementsByClassName('countDown')[0]
+        const costResult = document.getElementsByClassName('cost-result')[0];
+
+        const price = Number(document.getElementsByClassName('info-itemPrice')[0].innerText)
+        let _count = 1
+
+        function updateCount() {
+            counter.value = `${_count}`
+            costResult.innerText = `${_count}개 × ${price}원 = ${_count * price}원`
+        }
+
+        countUp.addEventListener('click', (e) => {
+            if (_count >= 9999) {
+                returns
+            }
+            _count += 1
+            updateCount()
+        })
+
+        countDown.addEventListener('click', (e) => {
+            if (_count <= 1) {
+                return
+            }
+            _count -= 1
+            updateCount()
+        })
+
+        counter.addEventListener("keyup", (e)=>{
+            _count=Number(counter.value)
+            updateCount()
+        })
+
+
+    </script>
+</body>
+
+</html>

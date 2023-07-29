@@ -52,6 +52,20 @@ body {
 
 .nav-footer {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.loginWrap {
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0.7px;
+    color: gray;
+}
+
+.loginWrap:hover {
+    color: #29b0ff;
 }
 
 .logoWrap {
@@ -82,14 +96,14 @@ body {
     flex-wrap: wrap;
 }
 
+.itemslot-wrap>a:hover {
+    color: #29b0ff;
+}
+
 .itemslot-wrap>a {
     box-sizing: content-box;
     padding: 20px;
     transition: 0.1s;
-}
-
-a:hover {
-    color: #4dade6;
 }
 
 .sellitem-wrap {
@@ -99,13 +113,13 @@ a:hover {
     overflow: hidden;
 }
 
-.sellitem-name{
+.sellitem-name {
     font-weight: 500;
 }
 
 .sellitem {
     background-color: white;
-    box-shadow: 0 0 5px 1px rgba(237, 237, 237, 0.5);
+    border: 1px solid rgb(242, 242, 242);
     width: 200px;
     height: 200px;
     margin: 25px;
@@ -114,12 +128,12 @@ a:hover {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.5s;
 }
 
 .sellitem:hover {
     z-index: 1;
-    transform:scale(1.02);
+    border: 1px solid rgb(213, 213, 213);
+    transform: scale(1.02);
 }
 
 .sellitem>* {

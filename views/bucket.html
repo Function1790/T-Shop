@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bucket.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/my">MY</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="bucket-wrap">
+                <div class="status-viewer">
+                    <div class="status-header">
+                        <div class="status-count">0개 선택</div>
+                    </div>
+                    <div class="status-footer">
+                    </div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="img/songe.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">초코송이</div>
+                            <div class="item-price">4$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="img/choco.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">ABC 초콜릿</div>
+                            <div class="item-price">6$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="img/banana.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">바나나우유</div>
+                            <div class="item-price">1.9$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="img/apple.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">사과</div>
+                            <div class="item-price">16$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="img/huney.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">허니버터칩</div>
+                            <div class="item-price">2$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+                <div class="bucketitem">
+                    <div class="item-ui">
+                        <img src="img/swing.jpg" alt="상품">
+                        <div class="item-info">
+                            <div class="item-name">스윙칩</div>
+                            <div class="item-price">1.7$</div>
+                        </div>
+                    </div>
+                    <div class="selectBtn"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const countView=document.getElementsByClassName('status-count')
+        const itemslots = document.getElementsByClassName('bucketitem')
+        const slots = []
+
+        function onSelect(){
+            count=0
+            for(var i=0; i<slots.length; i++){
+                if(slots[i].checkbox.className.indexOf('checked')!==-1){
+                    count+=1
+                }
+            }
+            countView.innerText=`${count}개 선택`
+        }
+
+        class Slot {
+            constructor(index) {
+                this.index = index
+                this.itemslot = itemslots[index]
+                this.checkbox = itemslots[index].getElementsByClassName('selectBtn')[0]
+                this.itemslot.addEventListener('click', (env) => {
+                    if (this.checkbox.className.indexOf('checked') == -1) {
+                        this.checkbox.className += ' checked'
+                    } else {
+                        this.checkbox.className = 'selectBtn'
+                    }
+                    onSelect()
+                })
+            }
+        }
+
+        for (var i = 0; i < itemslots.length; i++) {
+            slots.push(new Slot(i))
+        }
+    </script>
+</body>
+
+</html>

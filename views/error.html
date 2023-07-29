@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/item-info.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/my">MY</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <style>
+            .container {
+                align-items: center;
+                justify-content: center;
+                padding-top: 50px;
+            }
+
+            .error-title {
+                font-size: 60px;
+            }
+
+            .error-msg {
+                font-size: 40px;
+            }
+        </style>
+        <div class="container">
+            <div class="error-title">{{errorCode}}</div>
+            <div class="error-msg">{{errorMsg}}</div>
+        </div>
+    </div>
+</body>
+
+</html>

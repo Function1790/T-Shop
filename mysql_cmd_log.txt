@@ -1,0 +1,17 @@
+create table items(num int not null auto_increment, name text not null, price int not null, primary key(num));
+
+insert into items(name, price) values ("바나나우유", 1600);
+insert into items(name, price) values ("허니버터칩", 1700);
+insert into items(name, price) values ("스윙칩", 1300);
+insert into items(name, price) values ("초코송이", 1400);
+insert into items(name, price) values ("비락식혜", 1200);
+insert into items(name, price) values ("펩시 제로", 3900);
+insert into items(name, price) values ("몽쉘", 2700);
+
+
+create table customer(num int not null auto_increment,uid text not null, upw text not null,name text not null, primary key(num));
+
+insert into customer(uid, upw, name) values ("guest","guest","guest");
+insert into customer(uid, upw, name) values ("person","1234","Human");
+insert into customer(uid, upw, name) values ("Function","1234","Aysnc");
+alter table customer add bucket text after name;
