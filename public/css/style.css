@@ -16,6 +16,7 @@ a {
 
 body {
     height: 100vh;
+    background-color: #f7f7f7;
 }
 
 .wrap {
@@ -113,13 +114,26 @@ body {
     overflow: hidden;
 }
 
-.sellitem-name {
+
+a:hover {
+    color: #4dade6;
+}
+
+.sellitem-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    overflow: hidden;
+}
+
+.sellitem-name{
     font-weight: 500;
 }
 
 .sellitem {
     background-color: white;
     border: 1px solid rgb(242, 242, 242);
+    box-shadow: 0 0 5px 1px rgba(237, 237, 237, 0.5);
     width: 200px;
     height: 200px;
     margin: 25px;
@@ -128,12 +142,13 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: 0.5s;
 }
 
 .sellitem:hover {
     z-index: 1;
     border: 1px solid rgb(213, 213, 213);
-    transform: scale(1.02);
+    transform:scale(1.02);
 }
 
 .sellitem>* {
