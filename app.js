@@ -178,7 +178,7 @@ app.post('/insert-bucket', async (req, res) => {
         }
         const data = JSON.parse(body.data)
         print(data)
-        bucket[`${data.num}`] = data.count
+        bucket[Object.keys(bucket).length] = { "num": data.num, "count": data.count }
         bucket = JSON.stringify(bucket)
         sqlQuery(`update customer set bucket='${bucket}' where num=${req.session.num}`)
         res.send("OK")
@@ -189,12 +189,32 @@ app.post('/insert-bucket', async (req, res) => {
 })
 
 app.get('/bucket', async (req, res) => {
-    /*if(req.session.isLogined===false){
+    if (req.session.isLogined !== true) {
         res.send(forcedMoveWithAlertCode("로그인이 필요한 서비스입니다.", "/login"))
+        return
     }
-    const result=await sqlQuery(`select * from customer where num=${num}`)
-    const bucket=JSON.parse(result[0].bucket)*/
-    await sendRender(req, res, "views/bucket.html")
+    const result = await sqlQuery(`select * from customer where num=${req.session.num}`)
+    const bucket = JSON.parse(result[0].bucket)
+    var itemListHTML = ""
+    for (var i in bucket) {
+        var sqlResult = await sqlQuery(`select * from items where num=${bucket[i].num}`)
+        var item = sqlResult[0]
+        itemListHTML += `<div class="bucketitem">
+            <div class="item-ui">
+                <img src="img/${item.name}.jpg" alt="상품">
+                <div class="item-info">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-cost">${item.price}원 × ${bucket[i].count}개 = ${item.price * bucket[i].count}원</div>
+                    <div class="item-hidden-data">
+                        <span class="item-price">${item.price}</span>
+                        <span class="item-count">${bucket[i].count}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="selectBtn"></div>
+        </div>`
+    }
+    await sendRender(req, res, "views/bucket.html", { bucketItemList: itemListHTML })
 })
 
 

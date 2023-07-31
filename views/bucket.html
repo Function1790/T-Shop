@@ -51,38 +51,16 @@
                         <div class="status-count">0개 선택</div>
                     </div>
                     <div class="status-footer">
-                    </div>
-                </div>
-                <div class="bucketitem">
-                    <div class="item-ui">
-                        <img src="img/songe.jpg" alt="상품">
-                        <div class="item-info">
-                            <div class="item-name">초코송이</div>
-                            <div class="item-cost">1200원 × 3개 = 3600원</div>
-                            <div class="item-hidden-data">
-                                <span class="item-price">1200</span>
-                                <span class="item-count">3</span>
-                            </div>
+                        <div class="selectAllBtnWrap">
+                            전체선택
+                            <div class="selectAllbtn"></div>
                         </div>
                     </div>
-                    <div class="selectBtn"></div>
                 </div>
-                <div class="bucketitem">
-                    <div class="item-ui">
-                        <img src="img/choco.jpg" alt="상품">
-                        <div class="item-info">
-                            <div class="item-name">ABC 초콜릿</div>
-                            <div class="item-cost">1300원 × 1개 = 1300원</div>
-                            <div class="item-hidden-data">
-                                <span class="item-price">1300</span>
-                                <span class="item-count">1</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="selectBtn"></div>
-                </div>
+                {{bucketItemList}}
                 <div class="decision-controller">
-                    <div class="status-costTotal">합계 : 13000원</div>
+                    <div class="status-costTotal">합계 : 0원</div>
+                    <div class="buyBtn button">구매</div>
                 </div>
 
             </div>
@@ -90,6 +68,9 @@
     </div>
     <script>
         const countView = document.getElementsByClassName('status-count')[0]
+        const costTotalView = document.getElementsByClassName('status-costTotal')[0]
+        const selectAllBtnArea = document.getElementsByClassName('selectAllBtnWrap')[0]
+        const selectAllCircle = document.getElementsByClassName('selectAllbtn')[0]
         const itemslots = document.getElementsByClassName('bucketitem')
         const slots = []
 
@@ -102,8 +83,31 @@
                     costTotal += slots[i].price * slots[i].count
                 }
             }
+            if(count==slots.length){
+                selectAllCircle.className = 'selectAllbtn checked-all'
+            }
+            costTotalView.innerText = `합계 : ${costTotal}`
             countView.innerText = `${count}개 선택`
         }
+
+        selectAllBtnArea.addEventListener('click', () => {
+            if (selectAllCircle.className.indexOf('checked-all') == -1) {
+                selectAllCircle.className += ' checked-all'
+                for (var i in slots) {
+                    if (slots[i].checkbox.className.indexOf('checked') == -1) {
+                        slots[i].checkbox.className += ' checked'
+                    }
+                }
+                onSelect()
+            } else {
+                selectAllCircle.className = 'selectAllbtn'
+                for (var i in slots) {
+                    slots[i].checkbox.className = ' selectBtn'
+                }
+                onSelect()
+            }
+
+        })
 
         class Slot {
             constructor(index) {
@@ -117,6 +121,7 @@
                     if (this.checkbox.className.indexOf('checked') == -1) {
                         this.checkbox.className += ' checked'
                     } else {
+                        selectAllCircle.className = 'selectAllbtn'
                         this.checkbox.className = 'selectBtn'
                     }
                     onSelect()
