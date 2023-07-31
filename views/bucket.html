@@ -58,7 +58,11 @@
                         <img src="img/songe.jpg" alt="상품">
                         <div class="item-info">
                             <div class="item-name">초코송이</div>
-                            <div class="item-price">4$</div>
+                            <div class="item-cost">1200원 × 3개 = 3600원</div>
+                            <div class="item-hidden-data">
+                                <span class="item-price">1200</span>
+                                <span class="item-count">3</span>
+                            </div>
                         </div>
                     </div>
                     <div class="selectBtn"></div>
@@ -68,67 +72,37 @@
                         <img src="img/choco.jpg" alt="상품">
                         <div class="item-info">
                             <div class="item-name">ABC 초콜릿</div>
-                            <div class="item-price">6$</div>
+                            <div class="item-cost">1300원 × 1개 = 1300원</div>
+                            <div class="item-hidden-data">
+                                <span class="item-price">1300</span>
+                                <span class="item-count">1</span>
+                            </div>
                         </div>
                     </div>
                     <div class="selectBtn"></div>
                 </div>
-                <div class="bucketitem">
-                    <div class="item-ui">
-                        <img src="img/banana.jpg" alt="상품">
-                        <div class="item-info">
-                            <div class="item-name">바나나우유</div>
-                            <div class="item-price">1.9$</div>
-                        </div>
-                    </div>
-                    <div class="selectBtn"></div>
+                <div class="decision-controller">
+                    <div class="status-costTotal">합계 : 13000원</div>
                 </div>
-                <div class="bucketitem">
-                    <div class="item-ui">
-                        <img src="img/apple.jpg" alt="상품">
-                        <div class="item-info">
-                            <div class="item-name">사과</div>
-                            <div class="item-price">16$</div>
-                        </div>
-                    </div>
-                    <div class="selectBtn"></div>
-                </div>
-                <div class="bucketitem">
-                    <div class="item-ui">
-                        <img src="img/huney.jpg" alt="상품">
-                        <div class="item-info">
-                            <div class="item-name">허니버터칩</div>
-                            <div class="item-price">2$</div>
-                        </div>
-                    </div>
-                    <div class="selectBtn"></div>
-                </div>
-                <div class="bucketitem">
-                    <div class="item-ui">
-                        <img src="img/swing.jpg" alt="상품">
-                        <div class="item-info">
-                            <div class="item-name">스윙칩</div>
-                            <div class="item-price">1.7$</div>
-                        </div>
-                    </div>
-                    <div class="selectBtn"></div>
-                </div>
+
             </div>
         </div>
     </div>
     <script>
-        const countView=document.getElementsByClassName('status-count')
+        const countView = document.getElementsByClassName('status-count')[0]
         const itemslots = document.getElementsByClassName('bucketitem')
         const slots = []
 
-        function onSelect(){
-            count=0
-            for(var i=0; i<slots.length; i++){
-                if(slots[i].checkbox.className.indexOf('checked')!==-1){
-                    count+=1
+        function onSelect() {
+            var count = 0
+            var costTotal = 0
+            for (var i = 0; i < slots.length; i++) {
+                if (slots[i].checkbox.className.indexOf('checked') !== -1) {
+                    count += 1
+                    costTotal += slots[i].price * slots[i].count
                 }
             }
-            countView.innerText=`${count}개 선택`
+            countView.innerText = `${count}개 선택`
         }
 
         class Slot {
@@ -136,6 +110,9 @@
                 this.index = index
                 this.itemslot = itemslots[index]
                 this.checkbox = itemslots[index].getElementsByClassName('selectBtn')[0]
+                this.price = Number(itemslots[index].getElementsByClassName('item-price')[0].innerText)
+                this.count = Number(itemslots[index].getElementsByClassName('item-count')[0].innerText)
+                //Event
                 this.itemslot.addEventListener('click', (env) => {
                     if (this.checkbox.className.indexOf('checked') == -1) {
                         this.checkbox.className += ' checked'

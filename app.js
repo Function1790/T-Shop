@@ -100,7 +100,7 @@ async function sendRender(req, res, path, replaceItems) {
     res.send(await renderFile(req, path, replaceItems))
 }
 
-function needToLoginCheck(req, res) {
+function needToLoginCheck(req) {
     if (req.session.isLogined) {
         return true
     }
@@ -165,7 +165,7 @@ app.get('/logout', async (req, res) => {
 
 app.post('/insert-bucket', async (req, res) => {
     try {
-        if (needToLoginCheck(req, res) == false) {
+        if (needToLoginCheck(req) == false) {
             res.send("NOPE")
             return
         }
@@ -176,7 +176,7 @@ app.post('/insert-bucket', async (req, res) => {
         if (result.bucket !== null) {
             bucket = JSON.parse(result.bucket)
         }
-        const data=JSON.parse(body.data)
+        const data = JSON.parse(body.data)
         print(data)
         bucket[`${data.num}`] = data.count
         bucket = JSON.stringify(bucket)
@@ -186,6 +186,15 @@ app.post('/insert-bucket', async (req, res) => {
         console.log(err)
         res.send("ERROR").status(500)
     }
+})
+
+app.get('/bucket', async (req, res) => {
+    /*if(req.session.isLogined===false){
+        res.send(forcedMoveWithAlertCode("로그인이 필요한 서비스입니다.", "/login"))
+    }
+    const result=await sqlQuery(`select * from customer where num=${num}`)
+    const bucket=JSON.parse(result[0].bucket)*/
+    await sendRender(req, res, "views/bucket.html")
 })
 
 

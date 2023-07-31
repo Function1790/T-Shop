@@ -63,8 +63,7 @@
     font-weight: 600;
 }
 
-.item-price {
-    color: rgb(70, 70, 70);
+.item-cost {
     font-size: 15px;
     font-weight: 400;
 }
@@ -92,9 +91,32 @@
     align-items: center;
 }
 
+.status-container{
+    flex:3;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.status-costTotal{
+    color: rgb(70, 70, 70);
+    font-size: 18px;
+}
+
 .status-footer {
     flex: 1;
     display: flex;
     justify-content: right;
     align-items: center;
+}
+
+.item-hidden-data{
+    display: none;
+}
+
+.decision-controller{
+    border-top: 1px solid gray;
+    padding-top: 20px;
+    height: 400px;
+    display: flex;
 }
