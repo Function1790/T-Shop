@@ -35,6 +35,7 @@ app.use(express.urlencoded({ extended: false }))
 const session = require('express-session')
 const Memorystore = require('memorystore')
 const cookieParser = require("cookie-parser");
+const { count } = require('console')
 
 app.use(cookieParser('TMOLE'))
 
@@ -77,7 +78,7 @@ function forcedMoveCode(url) {
 }
 
 function forcedMoveWithAlertCode(text, url) {
-    return `<script>alert("${text}");window.location.href = "${url}"</script>`
+    return `<title>T SHOP</title><script>alert("${text}");window.location.href = "${url}"</script>`
 }
 
 async function renderFile(req, path, replaceItems = {}) {
@@ -101,10 +102,9 @@ async function sendRender(req, res, path, replaceItems) {
 
 function needToLoginCheck(req, res) {
     if (req.session.isLogined) {
-        res.send(forcedMoveWithAlertCode('이 서비스는 로그인 후에 이용 가능합니다.', '/login'))
-        return false
+        return true
     }
-    return true
+    return false
 }
 
 //Web
@@ -134,7 +134,7 @@ app.get('/items/:num', async (req, res) => {
         return
     }
     var item = sqlResult[0]
-    await sendRender(req, res, 'views/item-info.html', { itemName: item.name, itemPrice: item.price })
+    await sendRender(req, res, 'views/item-info.html', { itemName: item.name, itemPrice: item.price, itemNum: item.num })
 })
 
 app.get('/login', async (req, res) => {
@@ -151,22 +151,42 @@ app.post('/login-check', async (req, res) => {
         return
     }
     req.session.name = sqlResult[0].name
+    req.session.num = sqlResult[0].num
     req.session.isLogined = true
     res.send(forcedMoveWithAlertCode(`${sqlResult[0].name}님 환영합니다.`, "/"))
 })
 
 app.get('/logout', async (req, res) => {
     req.session.name = null
-    req.isLogined = false
+    req.session.isLogined = false
+    req.session.num = null
     res.send(forcedMoveWithAlertCode(`로그아웃 되셨습니다.`, "/"))
 })
 
-app.post('/add-bucket', async (req, res) => {
-    if (needToLoginCheck() == false) {
-        return
-    }
-    const body=req.body
+app.post('/insert-bucket', async (req, res) => {
+    try {
+        if (needToLoginCheck(req, res) == false) {
+            res.send("NOPE")
+            return
+        }
+        const body = req.body
 
+        const result = (await sqlQuery(`select * from customer where num=${req.session.num}`))[0]
+        var bucket = {}
+        if (result.bucket !== null) {
+            bucket = JSON.parse(result.bucket)
+        }
+        const data=JSON.parse(body.data)
+        print(data)
+        bucket[`${data.num}`] = data.count
+        bucket = JSON.stringify(bucket)
+        sqlQuery(`update customer set bucket='${bucket}' where num=${req.session.num}`)
+        res.send("OK")
+    } catch (err) {
+        console.log(err)
+        res.send("ERROR").status(500)
+    }
 })
+
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

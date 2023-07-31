@@ -16,7 +16,6 @@ a {
 
 body {
     height: 100vh;
-    background-color: #f7f7f7;
 }
 
 .wrap {
@@ -114,11 +113,6 @@ body {
     overflow: hidden;
 }
 
-
-a:hover {
-    color: #4dade6;
-}
-
 .sellitem-wrap {
     display: flex;
     flex-wrap: wrap;
@@ -133,7 +127,6 @@ a:hover {
 .sellitem {
     background-color: white;
     border: 1px solid rgb(242, 242, 242);
-    box-shadow: 0 0 5px 1px rgba(237, 237, 237, 0.5);
     width: 200px;
     height: 200px;
     margin: 25px;
