@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/post.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/post">POST</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+
+            <form action="/post-check" method="post" enctype="multipart/form-data">
+                <div class="item-data-wrap">
+                    <div class="item-imgWrap">
+                        <img src="" alt="이미지" id="itemImg">
+                        <label for="itemImgSelector">
+                            <div class="imgIploadBtn">사진 선택</div>
+                        </label>
+                        <input type="file" name="itemImg" id="itemImgSelector" accept=".jpg, .jpeg, .png" >
+                    </div>
+                    <div class="item-textWrap">
+                        <input class="inputTextData" name="name" placeholder="제품 이름" type="text">
+                        <input class="inputTextData" id="price" name="price" placeholder="제품 가격" type="text">
+                        <label for="submitBtn">
+                            <div class="imgIploadBtn">전송</div>
+                        </label>
+                        <input type="submit" id="submitBtn">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <script src="/src/post.js"></script>
+</body>
+
+</html>

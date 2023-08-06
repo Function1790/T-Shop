@@ -14,3 +14,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+const priceInput = document.getElementById('price')
+var lastPriceValue = ''
+priceInput.addEventListener('keyup', (event) => {
+    if (isNaN(Number(priceInput.value))) {
+        priceInput.value = lastPriceValue
+    } else {
+        lastPriceValue = priceInput.value
+        return
+    }
+})

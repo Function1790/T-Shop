@@ -31,9 +31,10 @@
     user-select: all;
 }
 
-.item-image {
-    width: 100px;
-    height: 100px;
+img {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
 }
 
 .buy-header {

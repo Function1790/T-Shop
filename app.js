@@ -2,10 +2,23 @@ const express = require('express')
 const app = express()
 const fs = require('fs')
 const mysql = require('mysql')
+const multer = require('multer');
 
 //Express Setting
 app.use(express.static('public'))
 app.use('/views', express.static('views'))
+
+//Multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/img/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname)
+    },
+})
+
+const upload = multer({ storage })
 
 //Mysql
 const connection = mysql.createConnection({
@@ -116,7 +129,7 @@ app.get('/', async (req, res) => {
         itemListsHTML += `
         <a href="/items/${sqlResult[i].num}" class="sellitem-link">
         <div class="sellitem">
-            <img src="img/${sqlResult[i].name}.jpg" alt="상품">
+            <img src="img/${sqlResult[i].imgName}" alt="상품">
             <div class="sellitem-name">${sqlResult[i].name}</div>
             <div class="sellitem-price">${sqlResult[i].price}원</div>
         </div>
@@ -134,7 +147,7 @@ app.get('/items/:num', async (req, res) => {
         return
     }
     var item = sqlResult[0]
-    await sendRender(req, res, 'views/item-info.html', { itemName: item.name, itemPrice: item.price, itemNum: item.num })
+    await sendRender(req, res, 'views/item-info.html', { itemName: item.name, itemPrice: item.price, itemNum: item.num, imgName: item.imgName })
 })
 
 app.get('/login', async (req, res) => {
@@ -201,7 +214,7 @@ app.get('/bucket', async (req, res) => {
         var item = sqlResult[0]
         itemListHTML += `<div class="bucketitem">
             <div class="item-ui">
-                <img src="img/${item.name}.jpg" alt="상품">
+                <img src="img/${item.imgName}" alt="상품">
                 <div class="item-info">
                     <div class="item-name">${item.name}</div>
                     <div class="item-cost">${item.price}원 × ${bucket[i].count}개 = ${item.price * bucket[i].count}원</div>
@@ -217,5 +230,23 @@ app.get('/bucket', async (req, res) => {
     await sendRender(req, res, "views/bucket.html", { bucketItemList: itemListHTML })
 })
 
+app.get('/post', async (req, res) => {
+    /*if (req.session.isLogined !== true) {
+        res.send(forcedMoveWithAlertCode('로그인이 필요한 서비스입니다.', '/login'))
+        return
+    }*/
+    await sendRender(req, res, "views/post.html", {})
+})
+
+app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
+    const { originalname, filename, size } = req.file;
+    const body = req.body
+    if (body.name == undefined || body.price == undefined || originalname == undefined) {
+        res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/post'))
+        return
+    }
+    const result = await sqlQuery(`insert into items (name, price, imgName) values ('${body.name}', '${body.price}', '${originalname}')`)
+    res.send(forcedMoveCode('/'))
+})
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))
