@@ -3,7 +3,7 @@ const countUp = document.getElementsByClassName('countUp')[0]
 const countDown = document.getElementsByClassName('countDown')[0]
 const costResult = document.getElementsByClassName('cost-result')[0];
 
-const price = Number(document.getElementsByClassName('info-itemPrice')[0].innerText)
+const price = Number(document.getElementsByClassName('priceHolder')[0].innerText)
 let _count = 1
 
 function updateCount() {

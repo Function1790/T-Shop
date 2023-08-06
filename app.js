@@ -164,6 +164,7 @@ app.post('/login-check', async (req, res) => {
         return
     }
     req.session.name = sqlResult[0].name
+    req.session.uid = sqlResult[0].uid
     req.session.num = sqlResult[0].num
     req.session.isLogined = true
     res.send(forcedMoveWithAlertCode(`${sqlResult[0].name}님 환영합니다.`, "/"))
@@ -190,7 +191,6 @@ app.post('/insert-bucket', async (req, res) => {
             bucket = JSON.parse(result.bucket)
         }
         const data = JSON.parse(body.data)
-        print(data)
         bucket[Object.keys(bucket).length] = { "num": data.num, "count": data.count }
         bucket = JSON.stringify(bucket)
         sqlQuery(`update customer set bucket='${bucket}' where num=${req.session.num}`)
@@ -231,10 +231,10 @@ app.get('/bucket', async (req, res) => {
 })
 
 app.get('/post', async (req, res) => {
-    /*if (req.session.isLogined !== true) {
+    if (req.session.isLogined !== true) {
         res.send(forcedMoveWithAlertCode('로그인이 필요한 서비스입니다.', '/login'))
         return
-    }*/
+    }
     await sendRender(req, res, "views/post.html", {})
 })
 
@@ -244,8 +244,11 @@ app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
     if (body.name == undefined || body.price == undefined || originalname == undefined) {
         res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/post'))
         return
+    } else if (req.session.uid==undefined){
+        res.send(forcedMoveWithAlertCode("계정 정보가 존재하지 않습니다.", '/login'))
+        return
     }
-    const result = await sqlQuery(`insert into items (name, price, imgName) values ('${body.name}', '${body.price}', '${originalname}')`)
+    const result = await sqlQuery(`insert into items (name, price, imgName, seller) values ('${body.name}', '${body.price}', '${originalname}', '${req.session.uid}')`)
     res.send(forcedMoveCode('/'))
 })
 
