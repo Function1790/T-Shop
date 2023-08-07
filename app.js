@@ -120,6 +120,14 @@ function needToLoginCheck(req) {
     return false
 }
 
+function isLogined(req, res) {
+    if (req.session.uid == undefined) {
+        res.send(forcedMoveWithAlertCode("로그인이 필요한 서비스입니다.", '/login'))
+        return false
+    }
+    return true
+}
+
 //Web
 app.get('/', async (req, res) => {
     var sqlResult = await sqlQuery('select * from items')
@@ -195,8 +203,7 @@ app.get('/logout', async (req, res) => {
 
 app.post('/insert-bucket', async (req, res) => {
     try {
-        if (needToLoginCheck(req) == false) {
-            res.send("NOPE")
+        if(!isLogined(req,res)){
             return
         }
         const body = req.body
@@ -218,8 +225,7 @@ app.post('/insert-bucket', async (req, res) => {
 })
 
 app.get('/bucket', async (req, res) => {
-    if (req.session.isLogined !== true) {
-        res.send(forcedMoveWithAlertCode("로그인이 필요한 서비스입니다.", "/login"))
+    if(!isLogined(req,res)){
         return
     }
     const result = await sqlQuery(`select * from customer where num=${req.session.num}`)
@@ -247,8 +253,7 @@ app.get('/bucket', async (req, res) => {
 })
 
 app.get('/post', async (req, res) => {
-    if (req.session.isLogined !== true) {
-        res.send(forcedMoveWithAlertCode('로그인이 필요한 서비스입니다.', '/login'))
+    if(!isLogined(req,res)){
         return
     }
     await sendRender(req, res, "views/post.html", {})
@@ -260,8 +265,7 @@ app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
     if (body.name == undefined || body.price == undefined || originalname == undefined) {
         res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/post'))
         return
-    } else if (req.session.uid == undefined) {
-        res.send(forcedMoveWithAlertCode("계정 정보가 존재하지 않습니다.", '/login'))
+    } else if(!isLogined(req,res)){
         return
     }
     const result = await sqlQuery(`insert into items (name, price, imgName, seller) values ('${body.name}', '${body.price}', '${originalname}', '${req.session.uid}')`)
@@ -269,7 +273,7 @@ app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
 })
 
 app.get('/modify/:num', async (req, res) => {
-    if(req.session.isLogined!==true){
+    if (req.session.isLogined !== true) {
         res.send(forcedMoveWithAlertCode('로그인이 필요한 서비스입니다.', '/login'))
         return
     }
@@ -278,9 +282,9 @@ app.get('/modify/:num', async (req, res) => {
         sendRender(res, 'public/error', { errorCode: "404", errorMsg: "Not Found" })
         return
     }
-    
+
     var item = sqlResult[0]
-    if(item.seller!==req.session.uid){
+    if (item.seller !== req.session.uid && req.session.uid !== "admin") {
         res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
     }
     await sendRender(req, res, 'views/modify.html', {
@@ -289,6 +293,34 @@ app.get('/modify/:num', async (req, res) => {
         itemNum: item.num,
         imgName: item.imgName
     })
+})
+
+app.post('/modify-check', async (req, res) => {
+    const body = req.body
+
+    //접근 거부
+    if (!isLogined(req, res)) {
+        return
+    } else if (body.name == undefined || body.price == undefined || body.num == undefined) {
+        res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/modify/' + body.num))
+        return
+    } else if (body.name == '' || body.price == '' || body.num == '') {
+        res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/modify/' + body.num))
+        return
+    }
+    const sqlResult = await sqlQuery(`select * from items where num=${body.num}`)
+
+    if (sqlResult.length == 0) {
+        sendRender(res, 'public/error', { errorCode: "404", errorMsg: "Not Found" })
+        return
+    }
+    const item = sqlResult[0]
+    if (item.seller !== req.session.uid && req.session.uid !== "admin") {
+        res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
+    }
+
+    sqlQuery(`update items set name='${body.name}', price=${body.price} where num=${body.num}`)
+    res.send(forcedMoveWithAlertCode('변경사항이 저장되었습니다.', '/'))
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))
