@@ -52,7 +52,10 @@
                     <div class="info-textWrap">
                         <div class="buy-header">
                             <div class="info-itemName">{{itemName}}</div>
-                            <div class="info-itemPrice">{{itemPrice}}원</div>
+                            <div class="info-footer">
+                                <div class="info-itemPrice">{{itemPrice}}원</div>
+                                {{ownerController}}
+                            </div>
                         </div>
                         <div class="buy-container">
                             <div class="cost-result">
@@ -87,10 +90,12 @@
                 type: "post",
                 async: true,
                 url: "/insert-bucket",
-                data: {"data":JSON.stringify({
-                    "num": Number('{{itemNum}}'),
-                    "count": Number($(".count")[0].value)
-                })},
+                data: {
+                    "data": JSON.stringify({
+                        "num": Number('{{itemNum}}'),
+                        "count": Number($(".count")[0].value)
+                    })
+                },
                 success: (data) => {
                     if (data == "OK") {
                         alert("장바구니에 담았습니다.")
@@ -112,9 +117,9 @@
             });
         })
         console.log(JSON.stringify({
-                    "num": Number('{{itemNum}}'),
-                    "count": Number($(".count")[0].value)
-                }))
+            "num": Number('{{itemNum}}'),
+            "count": Number($(".count")[0].value)
+        }))
     </script>
 </body>
 

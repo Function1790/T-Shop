@@ -147,7 +147,23 @@ app.get('/items/:num', async (req, res) => {
         return
     }
     var item = sqlResult[0]
-    await sendRender(req, res, 'views/item-info.html', { itemName: item.name, itemPrice: item.price, itemNum: item.num, imgName: item.imgName })
+
+    var ownerController = ""
+    if (sqlResult[0].seller == req.session.uid || req.session.uid == "admin") {
+        ownerController = `
+        <a href="/modify/${req.params.num}">
+            <div class="modifyBtn">수정하기</div>
+        </a>
+        `
+    }
+
+    await sendRender(req, res, 'views/item-info.html', {
+        itemName: item.name,
+        itemPrice: item.price,
+        itemNum: item.num,
+        imgName: item.imgName,
+        ownerController: ownerController
+    })
 })
 
 app.get('/login', async (req, res) => {
@@ -244,12 +260,35 @@ app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
     if (body.name == undefined || body.price == undefined || originalname == undefined) {
         res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/post'))
         return
-    } else if (req.session.uid==undefined){
+    } else if (req.session.uid == undefined) {
         res.send(forcedMoveWithAlertCode("계정 정보가 존재하지 않습니다.", '/login'))
         return
     }
     const result = await sqlQuery(`insert into items (name, price, imgName, seller) values ('${body.name}', '${body.price}', '${originalname}', '${req.session.uid}')`)
     res.send(forcedMoveCode('/'))
+})
+
+app.get('/modify/:num', async (req, res) => {
+    if(req.session.isLogined!==true){
+        res.send(forcedMoveWithAlertCode('로그인이 필요한 서비스입니다.', '/login'))
+        return
+    }
+    var sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
+    if (sqlResult.length == 0) {
+        sendRender(res, 'public/error', { errorCode: "404", errorMsg: "Not Found" })
+        return
+    }
+    
+    var item = sqlResult[0]
+    if(item.seller!==req.session.uid){
+        res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
+    }
+    await sendRender(req, res, 'views/modify.html', {
+        itemName: item.name,
+        itemPrice: item.price,
+        itemNum: item.num,
+        imgName: item.imgName
+    })
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

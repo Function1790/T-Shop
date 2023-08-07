@@ -1,0 +1,46 @@
+.info-itemName>input {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 500;
+    font-size: 25px;
+    border-bottom: 1px solid rgb(187, 187, 187);
+    padding: 10px;
+    padding-left: 5px;
+    width: 100%;
+    border: none;
+    outline: none;
+}
+
+.info-itemPrice>input {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: gray;
+    border: none;
+    outline: none;
+    text-align: right;
+    width: 150px;
+    height: 50px;
+    padding-right: 10px;
+}
+
+.buy-container {
+    height: 150px;
+    width: 100%;
+}
+
+.summit {
+    padding-top: 0;
+    border: none;
+    border: 1px solid rgb(77, 77, 77);
+    color: rgb(77, 77, 77);
+    background-color: white;
+}
+
+.summit:hover {
+    background-color: rgb(77, 77, 77);
+    color: white;
+}
+
+#itemNum{
+    display: none;
+}
