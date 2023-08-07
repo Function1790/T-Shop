@@ -30,13 +30,25 @@
 
 .summit {
     padding-top: 0;
-    border: none;
     border: 1px solid rgb(77, 77, 77);
     color: rgb(77, 77, 77);
     background-color: white;
+    transition: 0.1s;
 }
 
 .summit:hover {
+    background-color: rgb(77, 77, 77);
+    color: white;
+}
+
+.delete {
+    border: 1px solid rgb(77, 77, 77);
+    color: rgb(77, 77, 77);
+    background-color: white;
+    transition: 0.1s;
+}
+
+.delete:hover {
     background-color: rgb(77, 77, 77);
     color: white;
 }

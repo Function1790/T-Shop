@@ -35,7 +35,8 @@ input {
     font-weight: 600;
     margin: 10px;
     padding: 10px;
-    background-color: rgb(178, 178, 178);
+    background-color: rgb(77, 77, 77);
+    color:white;
     transition: 0.2s;
 }
 

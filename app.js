@@ -203,7 +203,7 @@ app.get('/logout', async (req, res) => {
 
 app.post('/insert-bucket', async (req, res) => {
     try {
-        if(!isLogined(req,res)){
+        if (!isLogined(req, res)) {
             return
         }
         const body = req.body
@@ -225,7 +225,7 @@ app.post('/insert-bucket', async (req, res) => {
 })
 
 app.get('/bucket', async (req, res) => {
-    if(!isLogined(req,res)){
+    if (!isLogined(req, res)) {
         return
     }
     const result = await sqlQuery(`select * from customer where num=${req.session.num}`)
@@ -253,7 +253,7 @@ app.get('/bucket', async (req, res) => {
 })
 
 app.get('/post', async (req, res) => {
-    if(!isLogined(req,res)){
+    if (!isLogined(req, res)) {
         return
     }
     await sendRender(req, res, "views/post.html", {})
@@ -265,7 +265,7 @@ app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
     if (body.name == undefined || body.price == undefined || originalname == undefined) {
         res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/post'))
         return
-    } else if(!isLogined(req,res)){
+    } else if (!isLogined(req, res)) {
         return
     }
     const result = await sqlQuery(`insert into items (name, price, imgName, seller) values ('${body.name}', '${body.price}', '${originalname}', '${req.session.uid}')`)
@@ -286,6 +286,7 @@ app.get('/modify/:num', async (req, res) => {
     var item = sqlResult[0]
     if (item.seller !== req.session.uid && req.session.uid !== "admin") {
         res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
+        return
     }
     await sendRender(req, res, 'views/modify.html', {
         itemName: item.name,
@@ -317,10 +318,31 @@ app.post('/modify-check', async (req, res) => {
     const item = sqlResult[0]
     if (item.seller !== req.session.uid && req.session.uid !== "admin") {
         res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
+        return
     }
 
     sqlQuery(`update items set name='${body.name}', price=${body.price} where num=${body.num}`)
     res.send(forcedMoveWithAlertCode('변경사항이 저장되었습니다.', '/'))
+})
+
+app.get('/delete/:num', async (req, res) => {
+    if (!isLogined(req, res)) { return }
+    const sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
+
+    if (sqlResult.length == 0) {
+        sendRender(res, 'public/error', { errorCode: "404", errorMsg: "Not Found" })
+        return
+    }
+    const item = sqlResult[0]
+    if (item.seller !== req.session.uid && req.session.uid !== "admin") {
+        res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
+        return
+    } else if (isNaN(Number(req.params.num))) {
+        res.send(forcedMoveWithAlertCode('접근이 금지되었습니다.', '/'))
+        return
+    }
+    sqlQuery(`delete from items where num=${req.params.num}`)
+    res.send(forcedMoveWithAlertCode('해당 게시물이 삭제되었습니다.', '/'))
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))
