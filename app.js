@@ -24,7 +24,7 @@ const upload = multer({ storage })
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: '1790',
     database: 'nodejs'
 })
 connection.connect();
@@ -98,7 +98,7 @@ async function renderFile(req, path, replaceItems = {}) {
     var content = await readFile(path)
 
     if (req.session.isLogined == true) {
-        content = content.replaceAll('{{loginStatus}}', 'logout')
+        content = content.replaceAll('{{loginStatus}}', 'MY')
     } else {
         content = content.replaceAll('{{loginStatus}}', 'login')
     }
@@ -128,6 +128,16 @@ function isLogined(req, res) {
     return true
 }
 
+async function updateData(req) {
+    var sqlResult = await sqlQuery(`select * from customer where num='${req.session.num}'`)
+    if (sqlResult.length == 0) {
+        return false
+    }
+    req.session.name = sqlResult[0].name
+    req.session.uid = sqlResult[0].uid
+    req.session.points = sqlResult[0].points
+}
+
 //Web
 app.get('/', async (req, res) => {
     var sqlResult = await sqlQuery('select * from items')
@@ -139,7 +149,7 @@ app.get('/', async (req, res) => {
         <div class="sellitem">
             <img src="img/${sqlResult[i].imgName}" alt="상품">
             <div class="sellitem-name">${sqlResult[i].name}</div>
-            <div class="sellitem-price">${sqlResult[i].price}원</div>
+            <div class="sellitem-price">${sqlResult[i].price}P</div>
         </div>
         </a>
         `
@@ -189,6 +199,7 @@ app.post('/login-check', async (req, res) => {
     }
     req.session.name = sqlResult[0].name
     req.session.uid = sqlResult[0].uid
+    req.session.points = sqlResult[0].points
     req.session.num = sqlResult[0].num
     req.session.isLogined = true
     res.send(forcedMoveWithAlertCode(`${sqlResult[0].name}님 환영합니다.`, "/"))
@@ -239,7 +250,7 @@ app.get('/bucket', async (req, res) => {
                 <img src="img/${item.imgName}" alt="상품">
                 <div class="item-info">
                     <div class="item-name">${item.name}</div>
-                    <div class="item-cost">${item.price}원 × ${bucket[i].count}개 = ${item.price * bucket[i].count}원</div>
+                    <div class="item-cost">${item.price}P × ${bucket[i].count}개 = ${item.price * bucket[i].count}P</div>
                     <div class="item-hidden-data">
                         <span class="item-price">${item.price}</span>
                         <span class="item-count">${bucket[i].count}</span>
@@ -343,6 +354,34 @@ app.get('/delete/:num', async (req, res) => {
     }
     sqlQuery(`delete from items where num=${req.params.num}`)
     res.send(forcedMoveWithAlertCode('해당 게시물이 삭제되었습니다.', '/'))
+})
+
+app.get('/my', async (req, res) => {
+    if (!isLogined(req, res)) {
+        return
+    }
+    await updateData(req)
+    await sendRender(req, res, "views/profile.html", {
+        'name': req.session.name,
+        'uid': req.session.uid,
+        'points': req.session.points,
+    })
+})
+
+app.get('/Z2l2ZSBwb2ludA', async (req, res) => {
+    //post일땐 qeury -> body
+    var add = Number(req.query.points)
+    var uid = req.query.uid
+
+    var sqlResult = await sqlQuery(`select * from customer where uid='${uid}'`)
+    if (sqlResult.length == 0) {
+        res.send("Error")
+        return
+    }
+    var points = sqlResult[0].points + add
+
+    await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
+    res.send("OK")
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

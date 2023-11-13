@@ -27,3 +27,5 @@ insert into customer(uid, upw, name) values ("person","1234","Human");
 insert into customer(uid, upw, name) values ("Function","1234","Aysnc");
 insert into customer(uid, upw, name) values ("admin","0000","admin");
 alter table customer add bucket text after name;
+alter table customer add points int;
+update customer set points=10000;

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/post">POST</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="wrapData">
+                <div class="dataline">
+                    <div class="header kor-font">이름</div>
+                    <div class="footer kor-font">이재헌</div>
+                </div>
+                <div class="dataline">
+                    <div class="header kor-font">아이디</div>
+                    <div class="footer kor-font">sr2318</div>
+                </div>
+                <div class="dataline">
+                    <div class="header kor-font">포인트</div>
+                    <div class="footer kor-font">200,000P</div>
+                </div>
+                <div class="buttonline">
+                    <a href="logout">
+                        <div class="logoutBtn">LOGOUT</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

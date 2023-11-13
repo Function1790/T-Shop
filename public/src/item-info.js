@@ -7,8 +7,8 @@ const price = Number(document.getElementsByClassName('priceHolder')[0].innerText
 let _count = 1
 
 function updateCount() {
-    counter.value = `${_count}`
-    costResult.innerText = `${_count}개 × ${price}원 = ${_count * price}원`
+    counter.value = `${_count}P`
+    costResult.innerText = `${_count}개 × ${price}P = ${_count * price}P`
 }
 
 countUp.addEventListener('click', (e) => {

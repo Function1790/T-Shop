@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500&display=swap');
+
+
+.container {
+    font-size: 20px;
+    justify-content: center;
+    padding: 50px 150px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapData {
+    border: 1px solid #e1e3e1;
+    border-radius: 8px;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dataline {
+    display: flex;
+    justify-content: left;
+    margin-bottom: 20px;
+}
+
+.dataline:last-child {
+    margin-bottom: 0px;
+}
+
+.kor-font {
+    padding-top: 4px;
+    font-family: 'Gothic A1', sans-serif;
+    font-weight: 400;
+}
+
+.header {
+    color: #797777;
+    width: 100px;
+}
+
+.buttonline {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logoutBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 400;
+    width: 100px;
+    height: 50px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+    color: #828282;
+}
+
+.logoutBtn:hover {
+    border: none;
+    background-color: #d93c3a;
+    color: #f6f6f6;
+}
