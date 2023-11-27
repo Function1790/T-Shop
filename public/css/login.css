@@ -44,3 +44,7 @@ input {
     color:white;
     background-color:#29b0ff;
 }
+
+.alignCenter {
+    padding: 0 22%;
+}

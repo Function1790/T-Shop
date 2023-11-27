@@ -85,6 +85,14 @@
     <script src="/src/item-info.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+        $(".buynowBtn").click(() => {
+            var itemCount = Number($(".count")[0].value)
+            if (itemCount < 0) {
+                return
+            }
+            document.location = `/buy-check?num={{itemNum}}&count=${itemCount}`
+        })
+
         $(".insertBucketBtn").click(() => {
             $.ajax({
                 type: "post",

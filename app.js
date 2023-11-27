@@ -71,7 +71,7 @@ const cookieConfig = {
     signed: true
 }
 
-//Function
+//<----------Function---------->
 const print = (data) => console.log(data)
 
 async function readFile(path) {
@@ -91,7 +91,11 @@ function forcedMoveCode(url) {
 }
 
 function forcedMoveWithAlertCode(text, url) {
-    return `<title>T SHOP</title><script>alert("${text}");window.location.href = "${url}"</script>`
+    return `<title>T SHOP</title><script>alert(\`${text}\`);window.location.href = "${url}"</script>`
+}
+
+function goBackWithAlertCode(text) {
+    return `<title>T SHOP</title><script>alert("${text}");window.location.href = document.referrer</script>`
 }
 
 async function renderFile(req, path, replaceItems = {}) {
@@ -138,7 +142,7 @@ async function updateData(req) {
     req.session.points = sqlResult[0].points
 }
 
-//Web
+//<----------Web---------->
 app.get('/', async (req, res) => {
     var sqlResult = await sqlQuery('select * from items')
 
@@ -382,6 +386,34 @@ app.get('/Z2l2ZSBwb2ludA', async (req, res) => {
 
     await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
     res.send("OK")
+})
+
+app.get('/buy-check', async (req, res) => {
+    const body = req.query
+    const itemNum = body.num
+    const itemCount = Number(body.count)
+
+    var result = await sqlQuery(`select * from items where num=${itemNum}`)
+    if (result.length == 0) {
+        res.send(goBackWithAlertCode('해당 물품이 존재하지 않습니다.'))
+        return
+    }
+
+    result = result[0]
+    const cost = result.price * itemCount
+    await updateData(req)
+    if (req.session.points >= cost) {
+        const afterPoints = req.session.points - cost
+        await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
+        var text = `'${result.name}' ${itemCount}개를 구매하셨습니다.`
+        text += `\n가격 : ${cost}P`
+        text += `\n잔여 포인트: ${req.session.points}P → ${afterPoints}P`
+        res.send(forcedMoveWithAlertCode(text, '/'))
+        await updateData(req)
+        return
+    }
+    res.send(goBackWithAlertCode('포인트가 부족합니다.'))
+    return
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))
