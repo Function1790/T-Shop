@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@200;300;400;500&display=swap');
 
 
 .container {
@@ -63,4 +63,40 @@
     border: none;
     background-color: #d93c3a;
     color: #f6f6f6;
+}
+
+.receiptWrap {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.receiptItem{
+    margin: 10px;
+}
+
+.receiptDataWrap {
+    border: 1px solid #bbbbbb;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 200px;
+    height: 100px;
+}
+
+.receiptName {
+
+}
+
+.receiptIndex {
+    font-weight: 300;
+    font-size: 14px;
+    color: #606060;
+}
+
+.receiptItem:hover {
+    z-index: 1;
+    box-shadow: 0px 0px 4px 5px #eeeeee;
 }

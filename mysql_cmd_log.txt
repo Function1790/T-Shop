@@ -20,12 +20,14 @@ update items set imgName="몽쉘.jpg" where num=7;
 
 
 
-create table customer(num int not null auto_increment,uid text not null, upw text not null,name text not null, primary key(num));
+create table customer(num int not null auto_increment, uid text not null, upw text not null,name text not null, primary key(num));
 
 insert into customer(uid, upw, name) values ("guest","guest","guest");
 insert into customer(uid, upw, name) values ("person","1234","Human");
 insert into customer(uid, upw, name) values ("Function","1234","Aysnc");
 insert into customer(uid, upw, name) values ("admin","0000","admin");
-alter table customer add bucket text after name;
 alter table customer add points int;
+alter table customer add bucket text;
 update customer set points=10000;
+
+create table receipt(num int not null auto_increment, buyer_uid text not null, is_used tinyint, data json not null, primary key(num));

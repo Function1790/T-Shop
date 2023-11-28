@@ -142,6 +142,30 @@ async function updateData(req) {
     req.session.points = sqlResult[0].points
 }
 
+async function addReceipt(uid, itemNum, itemName, itemPrice, count) {
+    var dataJson = {
+        itemNum: itemNum,
+        itemName: itemName,
+        itemPrice: itemPrice,
+        count: count
+    }
+
+    dataJson = JSON.stringify(dataJson)
+    await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
+}
+
+function getReceiptToHTML(receipt){
+    var data = JSON.parse(receipt.data)
+    return `<div class="receiptItem">
+        <a href="">
+            <div class="receiptDataWrap">
+                <div class="receiptName">${data.itemName}</div>
+                <div class="receiptIndex">주문번호 : ${receipt.num}</div>
+            </div>
+        </a>
+    </div>`
+}
+
 //<----------Web---------->
 app.get('/', async (req, res) => {
     var sqlResult = await sqlQuery('select * from items')
@@ -365,10 +389,19 @@ app.get('/my', async (req, res) => {
         return
     }
     await updateData(req)
+    const result = await sqlQuery(`select * from receipt where buyer_uid='${req.session.uid}';`)
+    var receiptText = ''
+    if (result.length > 0) {
+        for (var i in result) {
+            receiptText += getReceiptToHTML(result[i])
+        }
+    }
+
     await sendRender(req, res, "views/profile.html", {
         'name': req.session.name,
         'uid': req.session.uid,
         'points': req.session.points,
+        'receiptList': receiptText
     })
 })
 
@@ -405,10 +438,11 @@ app.get('/buy-check', async (req, res) => {
     if (req.session.points >= cost) {
         const afterPoints = req.session.points - cost
         await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
+        await addReceipt(req.session.uid, result.num, result.name, result.price, itemCount)
         var text = `'${result.name}' ${itemCount}개를 구매하셨습니다.`
         text += `\n가격 : ${cost}P`
         text += `\n잔여 포인트: ${req.session.points}P → ${afterPoints}P`
-        res.send(forcedMoveWithAlertCode(text, '/'))
+        res.send(forcedMoveWithAlertCode(text, '/my'))
         await updateData(req)
         return
     }
