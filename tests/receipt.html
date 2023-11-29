@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="receipt.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문서 - 01</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/post">POST</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="receiptWrap">
+                <div class="receiptHeader">
+                    <div class="title">구매 정보</div>
+                    <div>주문 번호 : 1</div>
+                    <div>사용 여부 : 미사용</div>
+                    <div>구매자 : guest</div>
+                </div>
+                <div class="receiptContainer">
+                    <div class="title">물품 정보</div>
+                    <div>바나나우유 1개</div>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
