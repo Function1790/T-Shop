@@ -6,9 +6,13 @@ const costResult = document.getElementsByClassName('cost-result')[0];
 const price = Number(document.getElementsByClassName('priceHolder')[0].innerText)
 let _count = 1
 
+function toFormatPoint(point) {
+    return point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 function updateCount() {
     counter.value = `${_count}`
-    costResult.innerText = `${_count}개 × ${price}P = ${_count * price}P`
+    costResult.innerText = `${_count}개 × ${toFormatPoint(price)}P = ${toFormatPoint(_count * price)}P`
 }
 
 countUp.addEventListener('click', (e) => {
