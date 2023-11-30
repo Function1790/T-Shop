@@ -74,6 +74,12 @@
         const itemslots = document.getElementsByClassName('bucketitem')
         const slots = []
 
+
+        function toFormatPoint(point) {
+            return point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+
         function onSelect() {
             var count = 0
             var costTotal = 0
@@ -83,10 +89,10 @@
                     costTotal += slots[i].price * slots[i].count
                 }
             }
-            if(count==slots.length){
+            if (count == slots.length) {
                 selectAllCircle.className = 'selectAllbtn checked-all'
             }
-            costTotalView.innerText = `합계 : ${costTotal}`
+            costTotalView.innerText = `합계 : ${toFormatPoint(costTotal)}`
             countView.innerText = `${count}개 선택`
         }
 
