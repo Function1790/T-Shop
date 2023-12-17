@@ -191,13 +191,14 @@ async function loginGuest(req) {
     await updateData(req)
 }
 
-function toFormatPoint(point){
+function toFormatPoint(point) {
     return point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 //<----------Web---------->
 app.get('/', async (req, res) => {
     var sqlResult = await sqlQuery('select * from items')
+    await loginGuest(req)
 
     var itemListsHTML = ""
     for (var i in sqlResult) {
@@ -277,14 +278,14 @@ app.post('/insert-bucket', async (req, res) => {
         const body = req.body
 
         const result = (await sqlQuery(`select * from customer where num=${req.session.num}`))[0]
-        var bucket = {}
+        var bucket = []
         if (result.bucket !== null) {
             bucket = JSON.parse(result.bucket)
         }
         const data = JSON.parse(body.data)
-        bucket[Object.keys(bucket).length] = { "num": data.num, "count": data.count }
+        bucket.push({ "num": data.num, "count": data.count })
         bucket = JSON.stringify(bucket)
-        sqlQuery(`update customer set bucket='${bucket}' where num=${req.session.num}`)
+        await sqlQuery(`update customer set bucket='${bucket}' where num=${req.session.num}`)
         res.send("OK")
     } catch (err) {
         console.log(err)
@@ -510,6 +511,11 @@ app.get('/buys-check', async (req, res) => {
     const body = req.query
     const receipt = JSON.parse(body.items)
 
+    if (receipt == '') {
+        res.send(goBackWithAlertCode('물품을 선택하지 않으셨습니다.'))
+        return
+    }
+
     var items = []
     var cost = 0
     for (var i in receipt) {
@@ -577,6 +583,31 @@ app.get('/receipt/:index', async (req, res) => {
         buyer: result[0].buyer_uid,
         items: itemsHTML
     })
+})
+
+app.get('/delete-bucket', async (req, res) => {
+    if (!isLogined(req, res)) {
+        return
+    }
+    const body = req.query
+    const deleteItems = JSON.parse(body.items)
+    if (deleteItems == '') {
+        res.send(goBackWithAlertCode('삭제할 물품을 선택해주세요.'))
+        return
+    }
+    deleteItems.sort()
+    deleteItems.reverse()
+
+    const result = await sqlQuery(`select * from customer where num=${req.session.num}`)
+    var bucket = JSON.parse(result[0].bucket)
+
+    for (var i in deleteItems) {
+        bucket.pop(deleteItems[i])
+    }
+    
+    const a = await sqlQuery(`update customer set bucket=${JSON.stringify(bucket)} where num=${req.session.num};`)
+    print(a)
+    res.send(forcedMoveCode('/bucket'))
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

@@ -91,6 +91,7 @@
 .itemContainer {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 250px;
     margin-right: 10px;
 }

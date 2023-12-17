@@ -60,7 +60,10 @@
                 {{bucketItemList}}
                 <div class="decision-controller">
                     <div class="status-costTotal">합계 : 0</div>
-                    <div class="buyBtn button">구매</div>
+                    <div class="btnWrap">
+                        <div class="deleteBtn button">삭제</div>
+                        <div class="buyBtn button">구매</div>
+                    </div>
                 </div>
 
             </div>
@@ -117,26 +120,40 @@
 
         $(".buyBtn").click(() => {
             var items = []
+            var count = 0
             for (var i in slots) {
                 if (slots[i].isChecked) {
+                    count++
                     items.push({
                         num: slots[i].num,
                         count: slots[i].count,
                     })
                 }
             }
+            if(count == 0) {
+                return
+            }
             document.location = "/buys-check?items=" + JSON.stringify(items)
+        })
+
+        $(".deleteBtn").click(() => {
+            var items = []
+            for (var i in slots) {
+                if (slots[i].isChecked) {
+                    items.push(slots[i].index)
+                }
+            }
+            document.location = "/delete-bucket?items=" + JSON.stringify(items)
         })
 
         class Slot {
             constructor(index) {
                 this.index = index
                 this.itemslot = itemslots[index]
-                this.name = itemslots[index].getElementsByClassName('item-name')[0].innerText
                 this.checkbox = itemslots[index].getElementsByClassName('selectBtn')[0]
-                this.price = Number(itemslots[index].getElementsByClassName('item-price')[0].innerText)
                 this.num = Number(itemslots[index].getElementsByClassName('item-num')[0].innerText)
                 this.count = Number(itemslots[index].getElementsByClassName('item-count')[0].innerText)
+                this.price = Number(itemslots[index].getElementsByClassName('item-price')[0].innerText)
                 this.isChecked = false
                 //Event
                 this.itemslot.addEventListener('click', (env) => {

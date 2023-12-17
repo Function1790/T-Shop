@@ -1,22 +1,13 @@
 create table items(num int not null auto_increment, name text not null, price int not null, primary key(num));
 
-insert into items(name, price) values ("바나나우유", 1600);
-insert into items(name, price) values ("허니버터칩", 1700);
-insert into items(name, price) values ("스윙칩", 1300);
-insert into items(name, price) values ("초코송이", 1400);
-insert into items(name, price) values ("비락식혜", 1200);
-insert into items(name, price) values ("펩시 제로", 3900);
-insert into items(name, price) values ("몽쉘", 2700);
 alter table items add imgName text;
 alter table items add seller text;
+insert into items(name, price, imgName) values ("짜파게티", 1600, "짜파게티.jpg");
+insert into items(name, price, imgName) values ("너구리", 1600, "너구리.jpg");
+insert into items(name, price, imgName) values ("키커", 1200, "키커.png");
+insert into items(name, price, imgName) values ("하리보젤리", 1100, "하리보젤리.jpg");
+insert into items(name, price, imgName) values ("핫팩", 900, "핫팩.jpg");
 update items set seller="admin"
-update items set imgName="바나나우유.jpg" where num=1;
-update items set imgName="허니버터칩.jpg" where num=2;
-update items set imgName="스윙칩.jpg" where num=3;
-update items set imgName="초코송이.jpg" where num=4;
-update items set imgName="비락식혜.jpg" where num=5;
-update items set imgName="펩시 제로.jpg" where num=6;
-update items set imgName="몽쉘.jpg" where num=7;
 
 
 
@@ -26,6 +17,7 @@ insert into customer(uid, upw, name) values ("guest","guest","guest");
 insert into customer(uid, upw, name) values ("person","1234","Human");
 insert into customer(uid, upw, name) values ("Function","1234","Aysnc");
 insert into customer(uid, upw, name) values ("admin","0000","admin");
+insert into customer(uid, upw, name) values ("sr22_001","2111","홍길동");
 alter table customer add points int;
 alter table customer add bucket text;
 update customer set points=10000;

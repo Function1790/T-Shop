@@ -128,6 +128,11 @@
     padding-right: 20px;
 }
 
+.button {
+    color: white;
+    background-color: rgb(141, 141, 141);
+}
+
 .buyBtn {
     color: white;
     background-color: rgb(141, 141, 141);
@@ -162,4 +167,13 @@
 .checked-all{
     background-color: #29b0ff;
     border: #29b0ff;
+}
+
+.btnWrap {
+    display: flex;
+    flex-direction: row;
+}
+
+.button:hover {
+    background-color: rgb(98, 98, 98);
 }
