@@ -66,6 +66,7 @@
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         const countView = document.getElementsByClassName('status-count')[0]
         const costTotalView = document.getElementsByClassName('status-costTotal')[0]
@@ -83,7 +84,7 @@
                     costTotal += slots[i].price * slots[i].count
                 }
             }
-            if(count==slots.length){
+            if (count == slots.length) {
                 selectAllCircle.className = 'selectAllbtn checked-all'
             }
             costTotalView.innerText = `합계 : ${costTotal}`
@@ -106,23 +107,40 @@
                 }
                 onSelect()
             }
+        })
 
+        $(".buyBtn").click(() => {
+            var items = []
+            for (var i in slots) {
+                if (slots[i].isChecked) {
+                    items.push({
+                        num: slots[i].num,
+                        count: slots[i].count,
+                    })
+                }
+            }
+            document.location = "/buys-check?items=" + JSON.stringify(items)
         })
 
         class Slot {
             constructor(index) {
                 this.index = index
                 this.itemslot = itemslots[index]
+                this.name = itemslots[index].getElementsByClassName('item-name')[0].innerText
                 this.checkbox = itemslots[index].getElementsByClassName('selectBtn')[0]
                 this.price = Number(itemslots[index].getElementsByClassName('item-price')[0].innerText)
+                this.num = Number(itemslots[index].getElementsByClassName('item-num')[0].innerText)
                 this.count = Number(itemslots[index].getElementsByClassName('item-count')[0].innerText)
+                this.isChecked = false
                 //Event
                 this.itemslot.addEventListener('click', (env) => {
                     if (this.checkbox.className.indexOf('checked') == -1) {
                         this.checkbox.className += ' checked'
+                        this.isChecked = true
                     } else {
                         selectAllCircle.className = 'selectAllbtn'
                         this.checkbox.className = 'selectBtn'
+                        this.isChecked = false
                     }
                     onSelect()
                 })

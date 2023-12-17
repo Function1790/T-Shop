@@ -159,20 +159,28 @@ async function addReceipt(uid, items, counts) {
     }
 
     dataJson = JSON.stringify(dataJson)
-    print(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
+
+    //print(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
     await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
 }
 
-function getReceiptToHTML(receipt) {
-    var data = JSON.parse(receipt.data)
-    return `<div class="receiptItem">
-        <a href="/receipt/${receipt.num}">
-            <div class="receiptDataWrap">
-                <div class="receiptName">${data[0].name}</div>
-                <div class="receiptIndex">주문번호 : ${receipt.num}</div>
-            </div>
-        </a>
-    </div>`
+function getReceiptToHTML(column) {
+    var data = JSON.parse(column.data)
+    cost = 0
+    for (var i in data) {
+        cost += data[i].price
+    }
+
+    elseThing = ['', ` 외 ${data.length - 1}개`][Number(data.length - 1 > 0)]
+    result = `<a href="/receipt/${column.num}">
+    <div class="item">
+            <div class="itemHeader">${column.num}</div>
+            <div class="itemContainer">${data[i].name}${elseThing}</div>
+            <div class="itemFooter">${cost}</div>
+    </div>
+    </a>`
+
+    return result
 }
 
 async function loginGuest(req) {
@@ -298,6 +306,7 @@ app.get('/bucket', async (req, res) => {
                     <div class="item-name">${item.name}</div>
                     <div class="item-cost">${item.price}P × ${bucket[i].count}개 = ${item.price * bucket[i].count}P</div>
                     <div class="item-hidden-data">
+                        <span class="item-num">${item.num}</span>
                         <span class="item-price">${item.price}</span>
                         <span class="item-count">${bucket[i].count}</span>
                     </div>
@@ -409,11 +418,12 @@ app.get('/my', async (req, res) => {
     await updateData(req)
     const result = await sqlQuery(`select * from receipt where buyer_uid='${req.session.uid}';`)
     var receiptText = ''
-    if (result.length > 0) {
+    if (result.length != 0) {
         for (var i in result) {
             receiptText += getReceiptToHTML(result[i])
         }
     }
+
 
     await sendRender(req, res, "views/profile.html", {
         'name': req.session.name,
@@ -440,6 +450,10 @@ app.get('/Z2l2ZSBwb2ludA', async (req, res) => {
 })
 
 app.get('/buynow-check', async (req, res) => {
+    if (!isLogined(req, res)) {
+        return
+    }
+
     const body = req.query
     const itemNum = body.num
     const itemCount = Number(body.count)
@@ -467,28 +481,81 @@ app.get('/buynow-check', async (req, res) => {
     return
 })
 
+app.get('/buys-check', async (req, res) => {
+    if (!isLogined(req, res)) {
+        return
+    }
+
+    const body = req.query
+    const receipt = JSON.parse(body.items)
+
+    var items = []
+    var cost = 0
+    for (var i in receipt) {
+        var result = await sqlQuery(`select * from items where num=${receipt[i].num}`)
+        if (result.length == 0) {
+            res.send(goBackWithAlertCode('존재하지 않는 물품이 있습니다.'))
+            return
+        }
+        var price = result[0].price * receipt[i].count
+        items.push({
+            num: receipt[i].num,
+            name: result[0].name,
+            count: receipt[i].count,
+            price: price
+        })
+        cost += price
+    }
+
+    await updateData(req)
+    if (req.session.points < cost) {
+        res.send(goBackWithAlertCode('포인트가 부족합니다.'))
+        return
+    }
+
+    const afterPoints = req.session.points - cost
+    await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
+    await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${req.session.uid}", 0, '${JSON.stringify(items)}');`)
+    var text = ''
+    for (var i in items) {
+        text += `'${items[i].name}' ${items[i].count}개\n`
+    }
+    text += `를 구매하셨습니다.\n가격 : ${cost}P`
+    text += `\n잔여 포인트: ${req.session.points}P → ${afterPoints}P`
+    res.send(forcedMoveWithAlertCode(text, '/my'))
+    await updateData(req)
+    return
+})
+
 app.get('/receipt/:index', async (req, res) => {
     const result = await sqlQuery(`select * from receipt where buyer_uid='${req.session.uid}' and num=${req.params.index};`)
     if (result.length == 0) {
         res.send(forcedMoveWithAlertCode("해당 주문서에 대한 권한이 없거나 주문서가 존재하지 않습니다.", "/my"))
         return
     }
-    
+
     const data = JSON.parse(result[0].data)
-    res.send(`
-        <div>
-            <div>
-                <h3>구매 정보</h3>
-                <div>주문 번호 : ${result[0].num}</div>
-                <div>사용 여부 : ${Boolean(result[0].is_used)}</div>
-                <div>구매자 : ${result[0].buyer_uid}</div>
-            </div> 
-            <div>
-                <h3>물품 정보</h3>
-                <div>${data[0].name} ${data[0].count}개</div>
-            </div>  
-        </div>
-    `)
+    var itemsHTML = ""
+    for (var i in data) {
+        var imgName = await sqlQuery(`select imgName from items where num=${data[i].num}`)
+        if (imgName.length == 0) {
+            imgName = ""
+        } else {
+            imgName = imgName[0].imgName
+        }
+        itemsHTML += `<div class="item">
+                    <div class="itemHeader"><img src="/img/${imgName}" alt="사진"></div>
+                    <div class="itemContainer">${data[i].name}</div>
+                    <div class="itemFooter">${data[i].count}</div>
+                </div>`
+    }
+
+    await sendRender(req, res, "./views/receipt.html", {
+        num: result[0].num,
+        isused: ["미사용", "사용"][result[0].is_used],
+        buyer: result[0].buyer_uid,
+        items: itemsHTML
+    })
 })
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

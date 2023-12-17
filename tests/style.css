@@ -9,6 +9,10 @@
     user-select: none;
 }
 
+.hide {
+    display: none;
+}
+
 a {
     text-decoration: none;
     color: black

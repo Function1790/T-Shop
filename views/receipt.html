@@ -1,12 +1,13 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/receipt.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T SHOP</title>
+    <title>주문서 - 01</title>
 </head>
 
 <body>
@@ -16,7 +17,7 @@
             <div class="nav-header">
                 <a href="/">
                     <div class="logoWrap">
-                        <img src="./img/logo.png" alt="LOGO">
+                        <img src="/img/logo.png" alt="LOGO">
                     </div>
                 </a>
             </div>
@@ -44,39 +45,33 @@
         </div>
         <!--Content-->
         <div class="container">
-            <div class="wrapData">
-                <div class="dataline">
-                    <div class="header kor-font">이름</div>
-                    <div class="footer kor-font">{{name}}</div>
-                </div>
-                <div class="dataline">
-                    <div class="header kor-font">아이디</div>
-                    <div class="footer kor-font">{{uid}}</div>
-                </div>
-                <div class="dataline">
-                    <div class="header kor-font">포인트</div>
-                    <div class="footer kor-font">{{points}}P</div>
-                </div>
-                <div class="buttonline">
-                    <a href="logout">
-                        <div class="logoutBtn">LOGOUT</div>
-                    </a>
-                </div>
-            </div>
-            <div class="receiptWrap wrapData">
-
-                <div class="receiptContainer">
-                    <div class="title">주문 목록</div>
-                    <div class="item explain">
-                        <div class="exp1">주문 번호</div>
-                        <div class="exp2">상품 이름</div>
-                        <div class="exp3">가격</div>
+            <div class="receiptWrap">
+                <div class="receiptHeader">
+                    <div class="title">주문정보 정보</div>
+                    <div class="block">
+                        <div class="blockHeader">주문 번호</div>
+                        <div class="blockContainer">{{num}}</div>
                     </div>
-                    {{receiptList}}
+                    <div class="block">
+                        <div class="blockHeader">사용 여부</div>
+                        <div class="blockContainer">{{isused}}</div>
+                    </div>
+                    <div class="block">
+                        <div class="blockHeader">구매자</div>
+                        <div class="blockContainer">{{buyer}}</div>
+                    </div>
+                </div>
+                <div class="receiptContainer">
+                    <div class="title">주문 상품 정보</div>
+                    <div class="item explain">
+                        <div class="exp1">이미지</div>
+                        <div class="exp2">상품 이름</div>
+                        <div class="exp3">수량</div>
+                    </div>
+                    {{items}}
                 </div>
             </div>
         </div>
-    </div>
 </body>
 
 </html>

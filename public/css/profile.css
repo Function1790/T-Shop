@@ -4,7 +4,7 @@
 .container {
     font-size: 20px;
     justify-content: center;
-    padding: 50px 5vw;
+    padding: 50px 5px;
     display: flex;
     flex-direction: column;
 }
@@ -14,8 +14,19 @@
     border-radius: 8px;
     padding: 30px 20px;
     display: flex;
-    min-width: 350px;
     flex-direction: column;
+    width: 100%;
+}
+
+@media screen and (min-width:900px) {
+    .container {
+        align-items: center;
+        padding: 50px 150px;
+    }
+
+    .wrapData {
+        max-width: 900px;
+    }
 }
 
 .dataline {
@@ -74,7 +85,7 @@
     flex-direction: row;
 }
 
-.receiptItem{
+.receiptItem {
     margin: 10px;
 }
 
@@ -87,9 +98,7 @@
     height: 100px;
 }
 
-.receiptName {
-
-}
+.receiptName {}
 
 .receiptIndex {
     font-weight: 300;
@@ -100,4 +109,76 @@
 .receiptItem:hover {
     z-index: 1;
     box-shadow: 0px 0px 4px 5px #eeeeee;
+}
+
+.receiptContainer {
+    margin-top: 10px;
+    background-color: white;
+    flex: 2.3;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+
+.title {
+    font-weight: 500;
+    padding-bottom: 20px;
+    border-bottom: 2px solid;
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 20px 0;
+    color: #5a5d5a;
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.item>* {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.itemHeader {
+    width: 100px;
+    margin-right: 20px;
+}
+
+.itemContainer {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    margin-right: 10px;
+}
+
+.itemFooter {
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.explain>* {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exp1 {
+    width: 100px;
+    margin-right: 20px;
+}
+
+.exp2 {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.exp3 {
+    width: 50px;
 }
