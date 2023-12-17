@@ -191,9 +191,12 @@ async function loginGuest(req) {
     await updateData(req)
 }
 
+function toFormatPoint(point){
+    return point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 //<----------Web---------->
 app.get('/', async (req, res) => {
-    await loginGuest(req)
     var sqlResult = await sqlQuery('select * from items')
 
     var itemListsHTML = ""
@@ -203,7 +206,7 @@ app.get('/', async (req, res) => {
         <div class="sellitem">
             <img src="img/${sqlResult[i].imgName}" alt="상품">
             <div class="sellitem-name">${sqlResult[i].name}</div>
-            <div class="sellitem-price">${sqlResult[i].price}P</div>
+            <div class="sellitem-price">${toFormatPoint(sqlResult[i].price)}P</div>
         </div>
         </a>
         `
@@ -304,7 +307,7 @@ app.get('/bucket', async (req, res) => {
                 <img src="img/${item.imgName}" alt="상품">
                 <div class="item-info">
                     <div class="item-name">${item.name}</div>
-                    <div class="item-cost">${item.price}P × ${bucket[i].count}개 = ${item.price * bucket[i].count}P</div>
+                    <div class="item-cost">${item.price}P × ${bucket[i].count}개 = ${toFormatPoint(item.price * bucket[i].count)}P</div>
                     <div class="item-hidden-data">
                         <span class="item-num">${item.num}</span>
                         <span class="item-price">${item.price}</span>
@@ -428,12 +431,30 @@ app.get('/my', async (req, res) => {
     await sendRender(req, res, "views/profile.html", {
         'name': req.session.name,
         'uid': req.session.uid,
-        'points': req.session.points,
+        'points': toFormatPoint(req.session.points),
         'receiptList': receiptText
     })
 })
 
+//
 app.get('/Z2l2ZSBwb2ludA', async (req, res) => {
+    //post일땐 qeury -> body
+    var add = Number(req.query.points)
+    var uid = req.query.uid
+
+    var sqlResult = await sqlQuery(`select * from customer where uid='${uid}'`)
+    if (sqlResult.length == 0) {
+        res.send("Error")
+        return
+    }
+    var points = sqlResult[0].points + add
+
+    await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
+    res.send("OK")
+})
+
+//post /get-point?uid=&point=
+app.post('/get-point', async (req, res) => {
     //post일땐 qeury -> body
     var add = Number(req.query.points)
     var uid = req.query.uid
@@ -471,8 +492,8 @@ app.get('/buynow-check', async (req, res) => {
         await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
         await addReceipt(req.session.uid, result, [itemCount])
         var text = `'${result[0].name}' ${itemCount}개를 구매하셨습니다.`
-        text += `\n가격 : ${cost}P`
-        text += `\n잔여 포인트: ${req.session.points}P → ${afterPoints}P`
+        text += `\n가격 : ${toFormatPoint(cost)}P`
+        text += `\n잔여 포인트: ${toFormatPoint(req.session.points)}P → ${toFormatPoint(afterPoints)}P`
         res.send(forcedMoveWithAlertCode(text, '/my'))
         await updateData(req)
         return
