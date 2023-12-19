@@ -128,22 +128,15 @@ body {
     overflow: hidden;
 }
 
-.sellitem-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
-    overflow: hidden;
-}
-
 .sellitem-name{
     font-weight: 500;
 }
 
 .sellitem {
     background-color: white;
-    border: 1px solid rgb(242, 242, 242);
-    width: 200px;
-    height: 200px;
+    border: 1px solid rgb(255, 255, 255);
+    width: 300px;
+    height: 300px;
     margin: 25px;
     display: flex;
     flex-direction: column;
@@ -151,6 +144,7 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: 0.5s;
+    font-size: 18px;
 }
 
 .sellitem:hover {
@@ -164,6 +158,6 @@ body {
 }
 
 .sellitem>img {
-    width: 120px;
-    height: 120px;
+    width: 200px;
+    height: 200px;
 }

@@ -56,3 +56,14 @@
 #itemNum{
     display: none;
 }
+
+.buy-footer {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonWrap {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+}

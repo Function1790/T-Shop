@@ -4,6 +4,26 @@ const fs = require('fs')
 const mysql = require('mysql')
 const multer = require('multer');
 
+//AES-256
+const crypto = require('crypto');
+
+const key = 'abcdefghabcdefghabcdefghabcdefgh';
+const iv = '0123456701234567';
+
+function encrypt(data) {
+    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+    let encrypt = cipher.update(data, 'utf8', 'base64');
+    encrypt += cipher.final('base64');
+    return encrypt
+}
+
+function decrypt(data) {
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    let decrypt = decipher.update(data, 'base64', 'utf8');
+    decrypt += decipher.final('utf8');
+    return decrypt
+}
+
 //Express Setting
 app.use(express.static('public'))
 app.use('/views', express.static('views'))
@@ -155,7 +175,7 @@ async function addReceipt(uid, items, counts) {
     var dataJson = []
     for (var i in items) {
         dataJson.push(itemToJson(items[i], counts[i]))
-        print(itemToJson(items[i], counts[i]))
+        //print(itemToJson(items[i], counts[i]))
     }
 
     dataJson = JSON.stringify(dataJson)
@@ -198,7 +218,6 @@ function toFormatPoint(point) {
 //<----------Web---------->
 app.get('/', async (req, res) => {
     var sqlResult = await sqlQuery('select * from items')
-    await loginGuest(req)
 
     var itemListsHTML = ""
     for (var i in sqlResult) {
@@ -209,8 +228,7 @@ app.get('/', async (req, res) => {
             <div class="sellitem-name">${sqlResult[i].name}</div>
             <div class="sellitem-price">${toFormatPoint(sqlResult[i].price)}P</div>
         </div>
-        </a>
-        `
+        </a>`
     }
 
     await sendRender(req, res, 'views/index.html', { itemlist: itemListsHTML })
@@ -437,28 +455,14 @@ app.get('/my', async (req, res) => {
     })
 })
 
-//
-app.get('/Z2l2ZSBwb2ludA', async (req, res) => {
-    //post일땐 qeury -> body
-    var add = Number(req.query.points)
-    var uid = req.query.uid
-
-    var sqlResult = await sqlQuery(`select * from customer where uid='${uid}'`)
-    if (sqlResult.length == 0) {
-        res.send("Error")
+app.get('/get-point', async (req, res) => {
+    try {
+        var add = Number(decrypt(req.query.point))
+        var uid = decrypt(req.query.uid)
+    } catch {
+        res.send('Error')
         return
     }
-    var points = sqlResult[0].points + add
-
-    await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
-    res.send("OK")
-})
-
-//post /get-point?uid=&point=
-app.post('/get-point', async (req, res) => {
-    //post일땐 qeury -> body
-    var add = Number(req.query.points)
-    var uid = req.query.uid
 
     var sqlResult = await sqlQuery(`select * from customer where uid='${uid}'`)
     if (sqlResult.length == 0) {
@@ -604,10 +608,33 @@ app.get('/delete-bucket', async (req, res) => {
     for (var i in deleteItems) {
         bucket.pop(deleteItems[i])
     }
-    
+
     const a = await sqlQuery(`update customer set bucket=${JSON.stringify(bucket)} where num=${req.session.num};`)
     print(a)
     res.send(forcedMoveCode('/bucket'))
 })
+
+app.get('/soldout/:num', async (req, res) => {
+    var sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
+    if (sqlResult.length == 0) {
+        res.send(goBackWithAlertCode("해당 상품이 존재하지 않습니다."))
+        return
+    }
+
+    await sqlQuery(`update items set soldout=1 where num=${req.params.num};`)
+    res.send(forcedMoveCode(`/items/${req.params.num}`))
+})
+
+app.get('/soldout-cancel/:num', async (req, res) => {
+    var sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
+    if (sqlResult.length == 0) {
+        res.send(goBackWithAlertCode("해당 상품이 존재하지 않습니다."))
+        return
+    }
+
+    await sqlQuery(`update items set soldout=0 where num=${req.params.num};`)
+    res.send(forcedMoveCode(`/items/${req.params.num}`))
+})
+
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

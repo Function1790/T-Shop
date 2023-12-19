@@ -58,15 +58,22 @@
                                 <div class="info-itemName"><input type="text" placeholder="이름" name="name"
                                         value="{{itemName}}"></div>
                                 <div class="info-itemPrice">
-                                    <input type="text" autocomplete="off"  placeholder="가격" name="price" value="{{itemPrice}}" id="price">원
+                                    <input type="text" autocomplete="off" placeholder="가격" name="price"
+                                        value="{{itemPrice}}" id="price">원
                                 </div>
 
                             </div>
                             <div class="buy-container"></div>
 
                             <div class="buy-footer">
-                                <input type="submit" value="저장하기" class="button summit"></input>
-                                <a href="/delete/{{itemNum}}" class="button delete">삭제하기</a>
+                                <div class="buttonWrap">
+                                    <input type="submit" value="저장하기" class="button summit"></input>
+                                    <a href="/delete/{{itemNum}}" class="button delete">삭제하기</a>
+                                </div>
+                                <div class="buttonWrap">
+                                    <a href="/soldout/{{itemNum}}" class="button delete">품절처리</a>
+                                    <a href="/soldout-cancel/{{itemNum}}" class="button delete">품절취소</a>
+                                </div>
                             </div>
                         </form>
                     </div>

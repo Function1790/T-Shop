@@ -2,12 +2,14 @@ create table items(num int not null auto_increment, name text not null, price in
 
 alter table items add imgName text;
 alter table items add seller text;
+alter table items add soldout tinyint;
 insert into items(name, price, imgName) values ("짜파게티", 1600, "짜파게티.jpg");
 insert into items(name, price, imgName) values ("너구리", 1600, "너구리.jpg");
 insert into items(name, price, imgName) values ("키커", 1200, "키커.png");
 insert into items(name, price, imgName) values ("하리보젤리", 1100, "하리보젤리.jpg");
 insert into items(name, price, imgName) values ("핫팩", 900, "핫팩.jpg");
-update items set seller="admin"
+update items set seller="admin";
+update items set soldout = 0;
 
 
 
