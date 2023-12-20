@@ -190,12 +190,13 @@ function getReceiptToHTML(column) {
     for (var i in data) {
         cost += data[i].price
     }
+    print()
 
     elseThing = ['', ` 외 ${data.length - 1}개`][Number(data.length - 1 > 0)]
     result = `<a href="/receipt/${column.num}">
     <div class="item">
             <div class="itemHeader">${column.num}</div>
-            <div class="itemContainer">${data[i].name}${elseThing}</div>
+            <div class="itemContainer">${data[0].name}${elseThing}</div>
             <div class="itemFooter">${cost}</div>
     </div>
     </a>`
@@ -493,11 +494,17 @@ app.get('/buynow-check', async (req, res) => {
     }
 
     const cost = result[0].price * itemCount
+    items = [{
+        num: result[0].num,
+        name: result[0].name,
+        count: itemCount,
+        price: cost
+    }]
     await updateData(req)
     if (req.session.points >= cost) {
         const afterPoints = req.session.points - cost
         await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
-        await addReceipt(req.session.uid, result, [itemCount])
+        await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${req.session.uid}", 0, '${JSON.stringify(items)}');`)
         var text = `'${result[0].name}' ${itemCount}개를 구매하셨습니다.`
         text += `\n가격 : ${toFormatPoint(cost)}P`
         text += `\n잔여 포인트: ${toFormatPoint(req.session.points)}P → ${toFormatPoint(afterPoints)}P`
