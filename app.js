@@ -18,9 +18,9 @@ function encrypt(data) {
 }
 
 function decrypt(data) {
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-    let decrypt = decipher.update(data, 'base64', 'utf8');
-    decrypt += decipher.final('utf8');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv)
+    let decrypt = decipher.update(data.replaceAll(" ", "+"), 'base64', 'utf8')
+    decrypt += decipher.final('utf8')
     return decrypt
 }
 
@@ -123,8 +123,10 @@ async function renderFile(req, path, replaceItems = {}) {
 
     if (req.session.isLogined == true) {
         content = content.replaceAll('{{loginStatus}}', 'MY')
+        content = content.replaceAll('{{userName}}', req.session.name)
     } else {
         content = content.replaceAll('{{loginStatus}}', 'login')
+        content = content.replaceAll('{{userName}}', 'login')
     }
 
     for (i in replaceItems) {
@@ -137,16 +139,17 @@ async function sendRender(req, res, path, replaceItems) {
     res.send(await renderFile(req, path, replaceItems))
 }
 
-function needToLoginCheck(req) {
-    if (req.session.isLogined) {
-        return true
-    }
-    return false
-}
-
 function isLogined(req, res) {
     if (req.session.uid == undefined) {
         res.send(forcedMoveWithAlertCode("로그인이 필요한 서비스입니다.", '/login'))
+        return false
+    }
+    return true
+}
+
+function isAdmin(req, res) {
+    if (req.session.uid !== "admin") {
+        res.send(goBackWithAlertCode("접근 권한이 없습니다."))
         return false
     }
     return true
@@ -174,13 +177,10 @@ function itemToJson(item, count) {
 async function addReceipt(uid, items, counts) {
     var dataJson = []
     for (var i in items) {
-        dataJson.push(itemToJson(items[i], counts[i]))
-        //print(itemToJson(items[i], counts[i]))
     }
 
     dataJson = JSON.stringify(dataJson)
 
-    //print(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
     await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
 }
 
@@ -266,9 +266,9 @@ app.get('/login', async (req, res) => {
 
 app.post('/login-check', async (req, res) => {
     var body = req.body
-    const uid = body.uid
-    const upw = body.upw
-    var sqlResult = await sqlQuery(`select * from customer where uid='${uid}' and upw='${upw}'`)
+    const uid = connection.escape(body.uid)
+    const upw = connection.escape(body.upw)
+    var sqlResult = await sqlQuery(`select * from customer where uid=${uid} and upw=${upw}`)
     if (sqlResult.length == 0) {
         res.send(forcedMoveWithAlertCode("아이디/비밀번호가 틀렸습니다.", "/login"))
         return
@@ -341,13 +341,16 @@ app.get('/bucket', async (req, res) => {
 })
 
 app.get('/post', async (req, res) => {
-    if (!isLogined(req, res)) {
+    if (!isAdmin(req, res)) {
         return
     }
     await sendRender(req, res, "views/post.html", {})
 })
 
 app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
+    if (!isAdmin(req, res)) {
+        return
+    }
     const { originalname, filename, size } = req.file;
     const body = req.body
     if (body.name == undefined || body.price == undefined || originalname == undefined) {
@@ -361,8 +364,7 @@ app.post('/post-check', upload.single('itemImg'), async (req, res, next) => {
 })
 
 app.get('/modify/:num', async (req, res) => {
-    if (req.session.isLogined !== true) {
-        res.send(forcedMoveWithAlertCode('로그인이 필요한 서비스입니다.', '/login'))
+    if (!isAdmin(req, res)) {
         return
     }
     var sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
@@ -388,7 +390,7 @@ app.post('/modify-check', async (req, res) => {
     const body = req.body
 
     //접근 거부
-    if (!isLogined(req, res)) {
+    if (!isAdmin(req, res)) {
         return
     } else if (body.name == undefined || body.price == undefined || body.num == undefined) {
         res.send(forcedMoveWithAlertCode("입력란에 빈칸이 없어야 합니다.", '/modify/' + body.num))
@@ -414,7 +416,7 @@ app.post('/modify-check', async (req, res) => {
 })
 
 app.get('/delete/:num', async (req, res) => {
-    if (!isLogined(req, res)) { return }
+    if (!isAdmin(req, res)) { return }
     const sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
 
     if (sqlResult.length == 0) {
@@ -589,6 +591,7 @@ app.get('/receipt/:index', async (req, res) => {
     })
 })
 
+//Error
 app.get('/delete-bucket', async (req, res) => {
     if (!isLogined(req, res)) {
         return
@@ -610,11 +613,11 @@ app.get('/delete-bucket', async (req, res) => {
     }
 
     const a = await sqlQuery(`update customer set bucket=${JSON.stringify(bucket)} where num=${req.session.num};`)
-    print(a)
     res.send(forcedMoveCode('/bucket'))
 })
 
 app.get('/soldout/:num', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
     var sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
     if (sqlResult.length == 0) {
         res.send(goBackWithAlertCode("해당 상품이 존재하지 않습니다."))
@@ -626,6 +629,7 @@ app.get('/soldout/:num', async (req, res) => {
 })
 
 app.get('/soldout-cancel/:num', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
     var sqlResult = await sqlQuery(`select * from items where num=${req.params.num}`)
     if (sqlResult.length == 0) {
         res.send(goBackWithAlertCode("해당 상품이 존재하지 않습니다."))

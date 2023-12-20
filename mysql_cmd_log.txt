@@ -18,7 +18,7 @@ create table customer(num int not null auto_increment, uid text not null, upw te
 insert into customer(uid, upw, name) values ("guest","guest","guest");
 insert into customer(uid, upw, name) values ("person","1234","Human");
 insert into customer(uid, upw, name) values ("Function","1234","Aysnc");
-insert into customer(uid, upw, name) values ("admin","0000","admin");
+insert into customer(uid, upw, name) values ("admin","0000","관리자");
 insert into customer(uid, upw, name) values ("sr22_001","2111","홍길동");
 alter table customer add points int;
 alter table customer add bucket text;
