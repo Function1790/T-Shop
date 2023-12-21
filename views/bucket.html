@@ -105,6 +105,7 @@
                 selectAllCircle.className += ' checked-all'
                 for (var i in slots) {
                     if (slots[i].checkbox.className.indexOf('checked') == -1) {
+                        slots[i].isChecked = true
                         slots[i].checkbox.className += ' checked'
                     }
                 }
@@ -112,6 +113,7 @@
             } else {
                 selectAllCircle.className = 'selectAllbtn'
                 for (var i in slots) {
+                    slots[i].isChecked = false
                     slots[i].checkbox.className = ' selectBtn'
                 }
                 onSelect()

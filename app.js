@@ -121,6 +121,10 @@ function goBackWithAlertCode(text) {
 async function renderFile(req, path, replaceItems = {}) {
     var content = await readFile(path)
 
+    if (req.session.uid == "admin") {
+        content = content.replaceAll('{{loginStatus}}', 'manage')
+    }
+
     if (req.session.isLogined == true) {
         content = content.replaceAll('{{loginStatus}}', 'MY')
         content = content.replaceAll('{{userName}}', req.session.name)
@@ -184,20 +188,20 @@ async function addReceipt(uid, items, counts) {
     await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${uid}", 0, '${dataJson}');`)
 }
 
-function getReceiptToHTML(column) {
+function getReceiptToHTML(column, type = 0) {
     var data = JSON.parse(column.data)
     cost = 0
     for (var i in data) {
         cost += data[i].price
     }
-    print()
+
 
     elseThing = ['', ` 외 ${data.length - 1}개`][Number(data.length - 1 > 0)]
-    result = `<a href="/receipt/${column.num}">
+    result = `<a href="/${['receipt/', 'manage-receipt?num='][type]}${column.num}">
     <div class="item">
             <div class="itemHeader">${column.num}</div>
             <div class="itemContainer">${data[0].name}${elseThing}</div>
-            <div class="itemFooter">${cost}</div>
+            <div class="itemFooter">${[cost,Boolean(column.is_used)][type]}</div>
     </div>
     </a>`
 
@@ -645,6 +649,71 @@ app.get('/soldout-cancel/:num', async (req, res) => {
 
     await sqlQuery(`update items set soldout=0 where num=${req.params.num};`)
     res.send(forcedMoveCode(`/items/${req.params.num}`))
+})
+
+app.get('/manage-receipt', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
+
+    var receiptNum = req.query.num
+    if (receiptNum == undefined) {
+        await sendRender(req, res, './views/manageRecipt.html', { num: '' })
+        return
+    }
+
+    const result = await sqlQuery(`select * from receipt where num=${receiptNum};`)
+    if (result == undefined || result.length == 0) {
+        res.send(forcedMoveWithAlertCode("해당 주문서가 존재하지 않습니다.", "/manage-receipt"))
+        return
+    }
+
+    const data = JSON.parse(result[0].data)
+    var itemsHTML = ""
+    for (var i in data) {
+        var imgName = await sqlQuery(`select imgName from items where num=${data[i].num}`)
+        if (imgName.length == 0) {
+            imgName = ""
+        } else {
+            imgName = imgName[0].imgName
+        }
+        itemsHTML += `<div class="item">
+                    <div class="itemHeader"><img src="/img/${imgName}" alt="사진"></div>
+                    <div class="itemContainer">${data[i].name}</div>
+                    <div class="itemFooter">${data[i].count}</div>
+                </div>`
+    }
+
+    await sendRender(req, res, "./views/manageRecipt.html", {
+        num: result[0].num,
+        isused: ["미사용", "사용"][result[0].is_used],
+        buyer: result[0].buyer_uid,
+        items: itemsHTML
+    })
+})
+
+app.get('/make-used', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
+
+    var receiptNum = req.query.num
+    const result = await sqlQuery(`update receipt set is_used=1 where num=${receiptNum};`)
+    res.send(forcedMoveCode(`/manage-receipt?num=${receiptNum}`))
+
+})
+
+app.get('/manage', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
+
+    const result = await sqlQuery(`select * from receipt;`)
+    var receiptText = ''
+    if (result.length != 0) {
+        for (var i in result) {
+            receiptText += getReceiptToHTML(result[i], 1)
+        }
+    }
+
+
+    await sendRender(req, res, "views/manage.html", {
+        'receiptList': receiptText
+    })
 })
 
 

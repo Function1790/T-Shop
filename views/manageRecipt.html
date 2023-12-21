@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/manageRecipt.css">
+    <link rel="stylesheet" href="/css/receipt.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/post">POST</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="checkerWrap">
+                <div class="checkerInput">
+                    <input type="text" value="{{num}}" id="input">
+                </div>
+                <div class="checkerManage">
+                    <div class="button searchBtn">조회</div>
+                    <div class="button useBtn">사용</div>
+                </div>
+            </div>
+            <div class="receiptWrap">
+                <div class="receiptWrap">
+                    <div class="receiptHeader">
+                        <div class="title">주문정보 정보</div>
+                        <div class="block">
+                            <div class="blockHeader">주문 번호</div>
+                            <div class="blockContainer">{{num}}</div>
+                        </div>
+                        <div class="block">
+                            <div class="blockHeader">사용 여부</div>
+                            <div class="blockContainer">{{isused}}</div>
+                        </div>
+                        <div class="block">
+                            <div class="blockHeader">구매자</div>
+                            <div class="blockContainer">{{buyer}}</div>
+                        </div>
+                    </div>
+                    <div class="receiptContainer">
+                        <div class="title">주문 상품 정보</div>
+                        <div class="item explain">
+                            <div class="exp1">이미지</div>
+                            <div class="exp2">상품 이름</div>
+                            <div class="exp3">수량</div>
+                        </div>
+                        {{items}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(".searchBtn").click(() => {
+            window.location.href=`/manage-receipt?num=${$('input').val()}`
+        })
+
+        $(".useBtn").click(()=>{
+            window.location.href=`/make-used?num=${$('input').val()}`
+        })
+    </script>
+</body>
+
+</html>

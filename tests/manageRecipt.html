@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="manageRecipt.css">
+    <link rel="stylesheet" href="receipt.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/post">POST</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <a href="/{{loginStatus}}">
+                    <div class="loginWrap">
+                        {{loginStatus}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+            <div class="checkerWrap">
+                <div class="checkerInput">
+                    <input type="text">
+                </div>
+                <div class="checkerManage">
+                    <div class="button">조회</div>
+                    <div class="button">사용</div>
+                </div>
+            </div>
+            <div class="receiptWrap">
+                <div class="receiptHeader">
+                    <div class="title">주문정보 정보</div>
+                    <div class="block">
+                        <div class="blockHeader">주문 번호</div>
+                        <div class="blockContainer">1</div>
+                    </div>
+                    <div class="block">
+                        <div class="blockHeader">사용 여부</div>
+                        <div class="blockContainer">미사용</div>
+                    </div>
+                    <div class="block">
+                        <div class="blockHeader">구매자</div>
+                        <div class="blockContainer">guest</div>
+                    </div>
+                </div>
+                <div class="receiptContainer">
+                    <div class="title">주문 상품 정보</div>
+                    <div class="item explain">
+                        <div class="exp1">이미지</div>
+                        <div class="exp2">상품 이름</div>
+                        <div class="exp3">수량</div>
+                    </div>
+                    <div class="item">
+                        <div class="itemHeader"><img src="./banana.jpg" alt="사진"></div>
+                        <div class="itemContainer">바나나 우유</div>
+                        <div class="itemFooter">1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
