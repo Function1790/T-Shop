@@ -249,12 +249,16 @@ body {
 
 @media screen and (max-width: 320px) {
     .nav {
-        height: 50px;
+        height: 70px;
     }
 
     .nav-header {
         flex: none;
-        width: 50px;
+    }
+
+    #logoImg {
+        width: 60px;
+        height: 60px;
     }
 
     .nav-footer {
@@ -267,15 +271,6 @@ body {
         width: 50%;
     }
 
-    #logoImg {
-        width: 40px;
-        height: 40px;
-    }
-
-    .itemslot-wrap {
-        width: 20%;
-    }
-
 
     .itemslot-wrap>a {
         font-size: 13px;
@@ -286,6 +281,6 @@ body {
     }
 
     .container {
-        margin-top: 50px;
+        margin-top: 70px;
     }
 }

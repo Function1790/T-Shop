@@ -123,6 +123,7 @@ async function renderFile(req, path, replaceItems = {}) {
 
     if (req.session.uid == "admin") {
         content = content.replaceAll('{{loginStatus}}', 'manage')
+        content = content.replaceAll('{{userName}}', '관리')
     }
 
     if (req.session.isLogined == true) {
@@ -198,7 +199,7 @@ function getReceiptToHTML(column, type = 0) {
 
     elseThing = ['', ` 외 ${data.length - 1}개`][Number(data.length - 1 > 0)]
     result = `<a href="/${['receipt/', 'manage-receipt?num='][type]}${column.num}">
-    <div class="item">
+    <div class="item ${['', 'used'][column.is_used]}">
             <div class="itemHeader">${column.num}</div>
             <div class="itemContainer">${data[0].name}${elseThing}</div>
             <div class="itemFooter">${[cost, Boolean(column.is_used)][type]}</div>
@@ -261,7 +262,7 @@ app.get('/items/:num', async (req, res) => {
     }
 
     await sendRender(req, res, 'views/item-info.html', {
-        itemName: item.name+['','<div class="soldout">Soldout</div>'][item.soldout],
+        itemName: item.name + ['', '<div class="soldout">Soldout</div>'][item.soldout],
         itemPrice: item.price,
         itemNum: item.num,
         imgName: item.imgName,
@@ -313,7 +314,17 @@ app.post('/insert-bucket', async (req, res) => {
             bucket = JSON.parse(result.bucket)
         }
         const data = JSON.parse(body.data)
-        bucket.push({ "num": data.num, "count": data.count })
+        var isMerged = false
+        for (var i in bucket) {
+            if (bucket[i].num == data.num) {
+                bucket[i].count += data.count
+                isMerged = true
+                break
+            }
+        }
+        if (!isMerged) {
+            bucket.push({ "num": data.num, "count": data.count })
+        }
         bucket = JSON.stringify(bucket)
         await sqlQuery(`update customer set bucket='${bucket}' where num=${req.session.num}`)
         res.send("OK")
@@ -568,7 +579,7 @@ app.get('/buys-check', async (req, res) => {
             res.send(goBackWithAlertCode('존재하지 않는 물품이 있습니다.'))
             return
         }
-        if (result[0].leftCount - receipt[i].count >= 0) {
+        if (result[0].leftCount - receipt[i].count < 0) {
             //구매 갯수 총합, 에러 
             res.send(goBackWithAlertCode(`물품 수량이 부족합니다. ('${result[0].name}' 남은 물품 : ${result[0].leftCount})`))
             return
@@ -589,10 +600,23 @@ app.get('/buys-check', async (req, res) => {
         return
     }
 
+    var deleteItems = []
     for (var i in receipt) {
         var result = await sqlQuery(`select * from items where num=${receipt[i].num}`)
         await processSoldout(result[i], receipt[i].count)
+        deleteItems.push(receipt[i].bucketIndex)
     }
+
+    deleteItems.sort()
+    deleteItems.reverse()
+
+    const userBucekt = await sqlQuery(`select * from customer where num=${req.session.num}`)
+    var bucket = JSON.parse(userBucekt[0].bucket)
+
+    for (var i in deleteItems) {
+        bucket.splice(deleteItems[i], 1)
+    }
+    await sqlQuery(`update customer set bucket='${JSON.stringify(bucket)}' where num=${req.session.num};`)
 
     const afterPoints = req.session.points - cost
     await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
@@ -657,10 +681,10 @@ app.get('/delete-bucket', async (req, res) => {
     var bucket = JSON.parse(result[0].bucket)
 
     for (var i in deleteItems) {
-        bucket.pop(deleteItems[i])
+        bucket.splice(deleteItems[i], 1)
     }
 
-    const a = await sqlQuery(`update customer set bucket=${JSON.stringify(bucket)} where num=${req.session.num};`)
+    await sqlQuery(`update customer set bucket='${JSON.stringify(bucket)}' where num=${req.session.num};`)
     res.send(forcedMoveCode('/bucket'))
 })
 
