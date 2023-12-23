@@ -32,6 +32,11 @@ countDown.addEventListener('click', (e) => {
 })
 
 counter.addEventListener("keyup", (e) => {
+    if(isNaN(Number(counter.value))){
+        _count = 1
+        updateCount()
+        return
+    }
     _count = Number(counter.value)
     updateCount()
 })

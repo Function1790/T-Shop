@@ -201,7 +201,7 @@ function getReceiptToHTML(column, type = 0) {
     <div class="item">
             <div class="itemHeader">${column.num}</div>
             <div class="itemContainer">${data[0].name}${elseThing}</div>
-            <div class="itemFooter">${[cost,Boolean(column.is_used)][type]}</div>
+            <div class="itemFooter">${[cost, Boolean(column.is_used)][type]}</div>
     </div>
     </a>`
 
@@ -226,12 +226,16 @@ app.get('/', async (req, res) => {
 
     var itemListsHTML = ""
     for (var i in sqlResult) {
+        sellingHTML = `<div class="sellitem-name">${sqlResult[i].name}</div>
+        <div class="sellitem-price">${toFormatPoint(sqlResult[i].price)}P</div>`
+        if (sqlResult[i].soldout == 1) {
+            sellingHTML = `<div class='soldout'>Soldout</div>`
+        }
         itemListsHTML += `
         <a href="/items/${sqlResult[i].num}" class="sellitem-link">
         <div class="sellitem">
             <img src="img/${sqlResult[i].imgName}" alt="상품">
-            <div class="sellitem-name">${sqlResult[i].name}</div>
-            <div class="sellitem-price">${toFormatPoint(sqlResult[i].price)}P</div>
+            ${sellingHTML}
         </div>
         </a>`
     }
@@ -257,10 +261,11 @@ app.get('/items/:num', async (req, res) => {
     }
 
     await sendRender(req, res, 'views/item-info.html', {
-        itemName: item.name,
+        itemName: item.name+['','<div class="soldout">Soldout</div>'][item.soldout],
         itemPrice: item.price,
         itemNum: item.num,
         imgName: item.imgName,
+        leftCount: item.leftCount,
         ownerController: ownerController
     })
 })
@@ -482,6 +487,21 @@ app.get('/get-point', async (req, res) => {
     res.send("OK")
 })
 
+async function processSoldout(item, count) {
+    var left = item.leftCount - count
+    print(left)
+    if (left < 0) {
+        return [false, item.leftCount]
+    }
+    print(`update items set count=${left} where num=${item.num}`)
+    if (item.leftCount == count) {
+        await sqlQuery(`update items set leftCount=${left}, soldout=1 where num=${item.num}`)
+    } else {
+        await sqlQuery(`update items set leftCount=${left} where num=${item.num}`)``
+    }
+    return [true, left]
+}
+
 app.get('/buynow-check', async (req, res) => {
     if (!isLogined(req, res)) {
         return
@@ -497,6 +517,7 @@ app.get('/buynow-check', async (req, res) => {
         return
     }
 
+
     const cost = result[0].price * itemCount
     items = [{
         num: result[0].num,
@@ -504,8 +525,14 @@ app.get('/buynow-check', async (req, res) => {
         count: itemCount,
         price: cost
     }]
+
     await updateData(req)
     if (req.session.points >= cost) {
+        var left = await processSoldout(result[0], itemCount)
+        if (left[0] == false) {
+            res.send(goBackWithAlertCode(`물품 수량이 부족합니다. ('${result[0].name}' 남은 물품 : ${result[0].leftCount})`))
+            return
+        }
         const afterPoints = req.session.points - cost
         await sqlQuery(`update customer set points=${afterPoints} where uid='${req.session.uid}'`)
         await sqlQuery(`insert into receipt(buyer_uid, is_used, data) values ("${req.session.uid}", 0, '${JSON.stringify(items)}');`)
@@ -541,6 +568,11 @@ app.get('/buys-check', async (req, res) => {
             res.send(goBackWithAlertCode('존재하지 않는 물품이 있습니다.'))
             return
         }
+        if (result[0].leftCount - receipt[i].count) {
+            //구매 갯수 총합, 에러 
+            res.send(goBackWithAlertCode(`물품 수량이 부족합니다. ('${result[0].name}' 남은 물품 : ${result[0].leftCount})`))
+            return
+        }
         var price = result[0].price * receipt[i].count
         items.push({
             num: receipt[i].num,
@@ -555,6 +587,11 @@ app.get('/buys-check', async (req, res) => {
     if (req.session.points < cost) {
         res.send(goBackWithAlertCode('포인트가 부족합니다.'))
         return
+    }
+
+    for (var i in receipt) {
+        var result = await sqlQuery(`select * from items where num=${receipt[i].num}`)
+        await processSoldout(result[i], receipt[i].count)
     }
 
     const afterPoints = req.session.points - cost

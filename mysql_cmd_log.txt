@@ -3,16 +3,18 @@ create table items(num int not null auto_increment, name text not null, price in
 alter table items add imgName text;
 alter table items add seller text;
 alter table items add soldout tinyint;
-insert into items(name, price, imgName) values ("짜파게티", 1600, "짜파게티.jpg");
-insert into items(name, price, imgName) values ("너구리", 1600, "너구리.jpg");
-insert into items(name, price, imgName) values ("우육탕", 1600, "우육탕.png");
-insert into items(name, price, imgName) values ("신라면", 1600, "신라면.jpg");
-insert into items(name, price, imgName) values ("진라면(매운맛)", 1600, "진라면.jpg");
-insert into items(name, price, imgName) values ("튀김우동", 1600, "튀김우동.jpg");
-insert into items(name, price, imgName) values ("사리곰탕", 1600, "사리곰탕.jpg");
-insert into items(name, price, imgName) values ("키커", 1200, "키커.png");
-insert into items(name, price, imgName) values ("하리보젤리", 1100, "하리보젤리.jpg");
-insert into items(name, price, imgName) values ("핫팩", 900, "핫팩.jpg");
+alter table items add leftCount int;
+insert into items(name, price, imgName, leftCount) values ("짜파게티", 3500, "짜파게티.jpg", 2);
+insert into items(name, price, imgName, leftCount) values ("너구리", 3500, "너구리.jpg", 2);
+insert into items(name, price, imgName, leftCount) values ("우육탕", 3500, "우육탕.png", 2);
+insert into items(name, price, imgName, leftCount) values ("신라면", 3500, "신라면.jpg", 2);
+insert into items(name, price, imgName, leftCount) values ("진라면(매운맛)", 3500, "진라면.jpg", 2);
+insert into items(name, price, imgName, leftCount) values ("튀김우동", 3500, "튀김우동.jpg" , 2);
+insert into items(name, price, imgName, leftCount) values ("사리곰탕", 3500, "사리곰탕.jpg", 2);
+insert into items(name, price, imgName, leftCount) values ("키커", 1000, "키커.png", 100);
+insert into items(name, price, imgName, leftCount) values ("하리보젤리", 1000, "하리보젤리.jpg", 400);
+insert into items(name, price, imgName, leftCount) values ("핫팩", 1000, "핫팩.jpg", 100);
+insert into items(name, price, imgName, leftCount) values ("서령고", 999999999, "서령고.jpg", 1);
 update items set seller="admin";
 update items set soldout = 0;
 
