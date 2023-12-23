@@ -182,3 +182,52 @@
 .exp3 {
     width: 50px;
 }
+
+@media screen and (max-width : 410px) {
+    .container{
+        font-size: 15px;
+        padding-top: 5px;
+    }
+
+    .item {
+        font-size: 13px;
+    }
+    .exp1{
+        font-size: 11px;
+        min-width: 0;
+        width: 100px;
+        margin-right: 10px;
+    }
+    .exp2 {
+        width: 200px;
+        margin-right: 10px;
+    }
+    
+    .exp3 {
+        width: 50px;
+    }
+
+    .itemHeader {
+        width: 100px;
+        margin-right: 10px;
+    }
+    
+    .itemContainer {
+        display: flex;
+        align-items: center;
+        width: 200px;
+        margin-right: 10px;
+    }
+    
+    .itemFooter {
+        width: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    
+    .itemContainer{
+        width: 100px;
+    }
+}

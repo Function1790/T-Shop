@@ -48,3 +48,32 @@ input {
 .alignCenter {
     padding: 0 22%;
 }
+
+
+@media screen and (max-width : 410px) {
+    .container {
+        padding: 10px 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .loginWrap {
+        display: flex;
+        padding-right: 7px;
+    }
+    .formInner {
+        width: 93vw;
+        height: 70vh;
+    }
+
+    input {
+        font-size: 15px;
+    }
+
+    .alignCenter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+    }
+}

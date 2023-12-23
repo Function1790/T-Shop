@@ -247,7 +247,7 @@ body {
     }
 }
 
-@media (max-width: 320px) {
+@media screen and (max-width: 320px) {
     .nav {
         height: 50px;
     }
@@ -283,19 +283,6 @@ body {
 
     .loginWrap > a {
         font-size: 12px;
-    }
-
-    .sellitem>img {
-        width: 100px;
-        height: 100px;
-    }
-
-    .sellitem-name {
-        font-size: 15px;
-    }
-
-    .sellitem-price {
-        font-size: 15px;
     }
 
     .container {

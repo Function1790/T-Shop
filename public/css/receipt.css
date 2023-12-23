@@ -20,7 +20,7 @@
 .receiptWrap {
     border-radius: 8px;
     width: 80vw;
-    margin-top: 40px;
+    margin-bottom: 40px;
     min-height: 50vw;
     display: flex;
     flex-direction: column;
@@ -121,4 +121,60 @@
 
 .exp3 {
     width: 50px;
+}
+
+
+@media screen and (max-width : 410px) {
+    .title {
+        font-size: 18px;
+    }
+    .block {
+        font-size: 13px;
+    }
+    .container{
+        font-size: 15px;
+        padding-top: 5px;
+    }
+
+    .item {
+        font-size: 13px;
+    }
+    .exp1{
+        font-size: 11px;
+        min-width: 0;
+        width: 100px;
+        margin-right: 10px;
+    }
+    .exp2 {
+        width: 200px;
+        margin-right: 10px;
+    }
+    
+    .exp3 {
+        width: 50px;
+    }
+
+    .itemHeader {
+        width: 100px;
+        margin-right: 10px;
+    }
+    
+    .itemContainer {
+        display: flex;
+        align-items: center;
+        width: 200px;
+        margin-right: 10px;
+    }
+    
+    .itemFooter {
+        width: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    
+    .itemContainer{
+        width: 100px;
+    }
 }

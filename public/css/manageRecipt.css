@@ -15,6 +15,7 @@
 }
 
 input {
+    width: 200px;
     padding: 20px;
     font-size: 24px;
     outline: none;
@@ -31,4 +32,17 @@ input {
 
 .button:hover {
     background-color: rgb(98, 98, 98);
+}
+
+@media screen and (max-width : 410px) {
+    .button {
+        display: flex;
+        font-size: 13px;
+        width: 70px;
+        padding-top: 15px;
+    }
+
+    #input {
+        width: 150px;
+    }
 }

@@ -103,6 +103,7 @@
 .status-costTotal {
     color: rgb(70, 70, 70);
     font-size: 18px;
+    margin-bottom: 10px;
 }
 
 .status-footer {
@@ -177,4 +178,51 @@
 
 .button:hover {
     background-color: rgb(98, 98, 98);
+}
+
+@media screen and (max-width : 410px) {
+    .container{
+        padding-top: 5px;
+    }
+
+    .item-ui>img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .item-cost {
+        font-size: 9px;
+    }
+
+    .selectBtn {
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        margin: 5px;
+    }
+
+    .bucketitem {
+        height: 120px;
+    }
+
+    .status-count {
+        font-size: 15px;
+    }
+
+    .selectAllbtn {
+        width: 15px;
+        height: 15px;
+    }
+
+    .selectAllBtnWrap{
+        font-size: 14px;
+    }
+
+    .status-costTotal{
+        font-size: 15px;
+    }
+
+    .button {
+        width: 100px;
+    }
 }

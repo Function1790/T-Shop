@@ -293,8 +293,10 @@ app.post('/login-check', async (req, res) => {
 
 app.get('/logout', async (req, res) => {
     req.session.name = null
-    req.session.isLogined = false
+    req.session.uid = null
+    req.session.points = null
     req.session.num = null
+    req.session.isLogined = false
     res.send(forcedMoveWithAlertCode(`로그아웃 되셨습니다.`, "/"))
 })
 
@@ -489,15 +491,13 @@ app.get('/get-point', async (req, res) => {
 
 async function processSoldout(item, count) {
     var left = item.leftCount - count
-    print(left)
     if (left < 0) {
         return [false, item.leftCount]
     }
-    print(`update items set count=${left} where num=${item.num}`)
     if (item.leftCount == count) {
         await sqlQuery(`update items set leftCount=${left}, soldout=1 where num=${item.num}`)
     } else {
-        await sqlQuery(`update items set leftCount=${left} where num=${item.num}`)``
+        await sqlQuery(`update items set leftCount=${left} where num=${item.num}`)
     }
     return [true, left]
 }
@@ -568,7 +568,7 @@ app.get('/buys-check', async (req, res) => {
             res.send(goBackWithAlertCode('존재하지 않는 물품이 있습니다.'))
             return
         }
-        if (result[0].leftCount - receipt[i].count) {
+        if (result[0].leftCount - receipt[i].count >= 0) {
             //구매 갯수 총합, 에러 
             res.send(goBackWithAlertCode(`물품 수량이 부족합니다. ('${result[0].name}' 남은 물품 : ${result[0].leftCount})`))
             return
