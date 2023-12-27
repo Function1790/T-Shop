@@ -120,8 +120,8 @@ function goBackWithAlertCode(text) {
     return `<title>T SHOP</title><script>alert("${text}");window.location.href = document.referrer</script>`
 }
 
-function processUndefined(req){
-    if(req.session==undefined){
+function processUndefined(req) {
+    if (req.session == undefined) {
         req.session = {}
     }
 }
@@ -813,5 +813,31 @@ app.post('/give-check', async (req, res) => {
     await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
     res.send(forcedMoveWithAlertCode('처리가 완료되었습니다.', '/give-point'))
 })
+
+app.get('/admin-give-check', async (req, res) => {
+    //if (!isAdmin(req, res)) { return }
+    await sendRender(req, res, 'views/admingive.html', {uid:`${req.query.uid}`})
+})
+
+app.get('/admin-give', async (req, res) => {
+    try {
+        var add = 100
+        var uid = req.query.uid
+    } catch {
+        res.send(forcedMoveWithAlertCode('오류 발생', '/'))
+        return
+    }
+
+    var sqlResult = await sqlQuery(`select * from customer where uid='${uid}'`)
+    if (sqlResult.length == 0) {
+        res.send(forcedMoveWithAlertCode('계정이 존재하지 않습니다.', '/'))
+        return
+    }
+    var points = sqlResult[0].points + add
+
+    await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
+    res.send(forcedMoveWithAlertCode('성공', '/'))
+})
+
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

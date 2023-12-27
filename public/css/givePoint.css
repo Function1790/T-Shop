@@ -71,6 +71,21 @@
 .title{
     display: flex;
     justify-content: left;
-    font-size: 25px;
+    font-size: 28px;
     padding: 20px;
+}
+
+.uid{
+    width: 200px;
+    height: 50px;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #e3e3e3;
+    margin-top: 10px;
+}
+
+.imgIploadBtn {
+    margin-top: 20px;
 }

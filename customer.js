@@ -28,9 +28,9 @@ function toForm(n) {
 }
 
 for (var i = 0; i < 280; i++) {
-    sqlQuery(`insert into customer(uid, upw, name, points) values ("sr22_${toForm(i + 1)}","sr1234","sr${i}", 0);`)
+    sqlQuery(`insert into customer(uid, upw, name, points) values ("sr22_s${toForm(i + 1)}","sr1234","sr${i}", 0);`)
 }
 
 for (var i = 0; i < 260; i++) {
-    sqlQuery(`insert into customer(uid, upw, name, points) values ("sr23_${toForm(i + 1)}","sr1234","sr${i}", 0);`)
+    sqlQuery(`insert into customer(uid, upw, name, points) values ("sr23_s${toForm(i + 1)}","sr1234","sr${i}", 0);`)
 }

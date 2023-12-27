@@ -123,7 +123,6 @@
     width: 50px;
 }
 
-
 @media screen and (max-width : 410px) {
     .title {
         font-size: 18px;
