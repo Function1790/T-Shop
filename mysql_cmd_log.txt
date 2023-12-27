@@ -14,7 +14,7 @@ insert into items(name, price, imgName, leftCount) values ("사리곰탕", 3500,
 insert into items(name, price, imgName, leftCount) values ("키커", 1000, "키커.png", 100);
 insert into items(name, price, imgName, leftCount) values ("하리보젤리", 1000, "하리보젤리.jpg", 400);
 insert into items(name, price, imgName, leftCount) values ("핫팩", 1000, "핫팩.jpg", 100);
-insert into items(name, price, imgName, leftCount) values ("서령고", 999999999, "서령고.jpg", 1);
+insert into items(name, price, imgName, leftCount) values ("서령고", 753640222, "서령고.jpg", 1);
 update items set seller="admin";
 update items set soldout = 0;
 
