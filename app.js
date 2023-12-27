@@ -4,6 +4,13 @@ const fs = require('fs')
 const mysql = require('mysql')
 const multer = require('multer');
 
+//Session
+const session = require('express-session')
+const Memorystore = require('memorystore')
+const cookieParser = require("cookie-parser");
+const { count } = require('console')
+
+
 //AES-256
 const crypto = require('crypto');
 
@@ -60,15 +67,10 @@ async function sqlQuery(query) {
 }
 
 //body Parser
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const { isUndefined } = require('util');
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }))
-
-//Session
-const session = require('express-session')
-const Memorystore = require('memorystore')
-const cookieParser = require("cookie-parser");
-const { count } = require('console')
 
 app.use(cookieParser('TMOLE'))
 
@@ -118,9 +120,15 @@ function goBackWithAlertCode(text) {
     return `<title>T SHOP</title><script>alert("${text}");window.location.href = document.referrer</script>`
 }
 
+function processUndefined(req){
+    if(req.session==undefined){
+        req.session = {}
+    }
+}
+
 async function renderFile(req, path, replaceItems = {}) {
     var content = await readFile(path)
-
+    processUndefined(req)
     if (req.session.uid == "admin") {
         content = content.replaceAll('{{loginStatus}}', 'manage')
     }
@@ -261,7 +269,7 @@ app.get('/items/:num', async (req, res) => {
     }
 
     await sendRender(req, res, 'views/item-info.html', {
-        itemName: item.name+['','<div class="soldout">Soldout</div>'][item.soldout],
+        itemName: item.name + ['', '<div class="soldout">Soldout</div>'][item.soldout],
         itemPrice: item.price,
         itemNum: item.num,
         imgName: item.imgName,
@@ -456,6 +464,7 @@ app.get('/my', async (req, res) => {
     var receiptText = ''
     if (result.length != 0) {
         for (var i in result) {
+            //[디버그]
             receiptText += getReceiptToHTML(result[i])
         }
     }
@@ -753,5 +762,32 @@ app.get('/manage', async (req, res) => {
     })
 })
 
+app.get('/give-point', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
+    await sendRender(req, res, 'views/givePoint.html', {})
+})
+
+app.get('/changePwd', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
+    await sendRender(req, res, 'views/changePwd.html', {})
+})
+
+
+app.post('/give-check', async (req, res) => {
+    if (!isAdmin(req, res)) { return }
+    const body = req.body
+    var uid = body.uid
+    var add = body.point
+
+    var sqlResult = await sqlQuery(`select * from customer where uid='${uid}'`)
+    if (sqlResult.length == 0) {
+        res.send(forcedMoveWithAlertCode('존재하지 않는 아이디입니다.', '/give-point'))
+        return
+    }
+    var points = sqlResult[0].points + add
+
+    await sqlQuery(`update customer set points=${points} where uid='${uid}'`)
+    res.send(forcedMoveWithAlertCode('처리가 완료되었습니다.', '/give-point'))
+})
 
 app.listen(5500, () => console.log('Server run https://localhost:5500'))

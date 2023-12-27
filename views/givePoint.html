@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/givePoint.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T SHOP</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <!--Navigator-->
+        <div class="nav">
+            <div class="nav-header">
+                <a href="/">
+                    <div class="logoWrap">
+                        <img src="./img/logo.png" id="logoImg" alt="LOGO">
+                    </div>
+                </a>
+            </div>
+            <div class="nav-container">
+                <div class="slotlist-wrap">
+                    <div class="itemslot-wrap">
+                        <a href="/">SHOP</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/bucket">BUCKET</a>
+                    </div>
+                    <div class="itemslot-wrap">
+                        <a href="/my">MY</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="nav-footer">
+                <div class="loginWrap">
+                    <a href="/{{loginStatus}}">{{userName}}</a>
+                </div>
+            </div>
+        </div>
+        <!--Content-->
+        <div class="container">
+
+            <form action="/give-check" method="post">
+                <div class="item-data-wrap">
+                    <div class="item-textWrap">
+                        <div class="title">포인트 입금</div>
+                        <input class="inputTextData" name="uid" placeholder="ID" type="text">
+                        <input class="inputTextData" id="price" name="point" placeholder="포인트" type="text">
+                        <label for="submitBtn">
+                            <div class="imgIploadBtn">입금</div>
+                        </label>
+                        <input type="submit" id="submitBtn">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <script src="/src/post.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 코드 생성</title>
+</head>
+
+<body>
+    <img src="https://chart.apis.google.com/chart?cht=qr&chs=300x300&chl=https://www.happykoo.net"></img>
+    <!-- QR 코드를 표시할 공간 -->
+    <div id="qrcode"></div>
+
+    <!-- qrious 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
+    <script>
+        // QR 코드 생성 함수
+        function generateQRCode(text) {
+            // qrious 라이브러리 사용
+            var qr = new QRious({
+                element: document.getElementById('qrcode'),
+                value: text,
+                size: 300
+            });
+        }
+
+        // 페이지 로드 시 QR 코드 생성
+        window.onload = function () {
+            // 생성할 QR 코드의 텍스트 데이터
+            var qrText = "https://www.example.com";
+
+            // QR 코드 생성 함수 호출
+            generateQRCode(qrText);
+        };
+    </script>
+
+</body>
+
+</html>

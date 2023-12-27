@@ -183,6 +183,21 @@
     width: 50px;
 }
 
+.qrWrap{
+    margin-top: 10PX;
+    height: auto;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#QR {
+    height: 200px;
+    width: 200px;
+
+}
+
 @media screen and (max-width : 410px) {
     .container{
         font-size: 15px;
